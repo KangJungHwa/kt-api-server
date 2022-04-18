@@ -1,0 +1,20 @@
+# https://kubernetes.io/ko/docs/concepts/services-networking/ingress/
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: kt
+  name: kt-api-server-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: "kt-api-server.k8s.io"
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: kt-api-server-service
+                port:
+                  number: 8080

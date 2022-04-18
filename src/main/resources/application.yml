@@ -1,0 +1,135 @@
+spring:
+  profiles:
+    active: local
+  application:
+    name: kt-api-server
+
+  #################
+  ## JPA
+  #################
+  jpa:
+    hibernate:
+      ddl-auto: create
+      use-new-id-generator-mappings: false
+    generate-ddl: false
+    show-sql: true
+    properties:
+      hibernate.hbm2ddl.import_files_sql_extractor: org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor
+      hibernate.default_batch_fetch_size: ${chunkSize:1000}
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    open-in-view: false
+    database: mysql
+  ################################################################
+  ## DataSource
+  ##  multi row insert rewriteBatchedStatements=true
+  ################################################################
+  datasource:
+    url: jdbc:log4jdbc:mysql://aiplatformdev2.synology.me:30084/monitoring?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
+    #url: jdbc:log4jdbc:mysql://172.30.1.86:32524/konga?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&rewriteBatchedStatements=true
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    username: root
+    password: ktaicc@1234
+    sql-script-encoding: UTF-8
+    continue-on-error: true
+    initialization-mode: always
+    hikari:
+      connection-test-query: SELECT 1
+      maximum-pool-size: 10
+      max-lifetime: 1800000
+      minimum-idle: 10
+      idle-timeout: 600000
+
+
+  #################
+  ## Servlet
+  #################
+
+  servlet:
+    multipart:
+      enabled: true
+
+###################
+## Web Container
+###################
+
+server:
+  port: 8080
+  address: 0.0.0.0
+
+######################
+## Application(Harbor)
+######################
+
+app:
+  backend:
+    harbor:
+      url: http://kong.k8s.io:30083/harbor
+      username: admin
+      password: Ktaicc@1234
+    kong-admin:
+      url: http://kong-admin.k8s.io:30083
+    rabbitmq:
+      url: rabbitmq.k8s.io
+      port: 30083
+      username: admin
+      password: Ktaicc@1234
+    k8s:
+      url: http://kong.k8s.io:30083/k8s
+      token: eyJhbGciOiJSUzI1NiIsImtpZCI6ImhkeFI4RlZNUXA4Q3hRRkx4TVBxNk0yUENuclNrWjZFakY4YnRHaFdBSDgifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tZ2ttMngiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImYxOTk1NmNhLTI0NWMtNDY1MS04MTc0LTI0ZDAwN2M3NWFjZiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.TyB2EC3hJUkDMBvtgHnkjGU7XvzDkGV0LuxX8czGdmBbLURlPBqoALAwWI_RA-lJFc9TSVl_9ErYHBOVsFMupYo6KSn2j-lGxhkEJrEl3P36uvjviLq935PntVI9QzOQBQTh43A-mRYN4YCJiSmyiGWxcWZ-EeoA5l3915-cyeAMh4Yh6JfnsgadDyPOwLW_RjLEuOzsDwiosw68rOvpzKiKGyYe75FHZOTGWV5Zh5aRZnyi5pW1YVIANVrHxBuxVmS2dv87yiSNlYnCnMDrQ1QL8D8FMsfUjTM2xNnxFezRFbvgI1mqUf_coRj0dNZPkYQApVwg53BCbLe3EKae9g
+    k8s-apis:
+      url: http://kong.k8s.io:30083/k8s-apis
+      token: eyJhbGciOiJSUzI1NiIsImtpZCI6ImhkeFI4RlZNUXA4Q3hRRkx4TVBxNk0yUENuclNrWjZFakY4YnRHaFdBSDgifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tZ2ttMngiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImYxOTk1NmNhLTI0NWMtNDY1MS04MTc0LTI0ZDAwN2M3NWFjZiIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.TyB2EC3hJUkDMBvtgHnkjGU7XvzDkGV0LuxX8czGdmBbLURlPBqoALAwWI_RA-lJFc9TSVl_9ErYHBOVsFMupYo6KSn2j-lGxhkEJrEl3P36uvjviLq935PntVI9QzOQBQTh43A-mRYN4YCJiSmyiGWxcWZ-EeoA5l3915-cyeAMh4Yh6JfnsgadDyPOwLW_RjLEuOzsDwiosw68rOvpzKiKGyYe75FHZOTGWV5Zh5aRZnyi5pW1YVIANVrHxBuxVmS2dv87yiSNlYnCnMDrQ1QL8D8FMsfUjTM2xNnxFezRFbvgI1mqUf_coRj0dNZPkYQApVwg53BCbLe3EKae9g
+
+#################
+## Logging
+#################
+
+logging:
+  config: src/main/resources/logback.xml
+  #config: /opt/logback.xml
+#################
+## Management
+#################
+
+management:
+  endpoints:
+    enabled-by-default: true
+
+upload:
+  path: "/tmp"
+
+#################
+## k8s config
+#################
+k8s:
+  nodes:
+    nlu-framework-master-1: 192.168.0.50
+    nlu-framework-master-2: 192.168.0.51
+    nlu-framework-master-3: 192.168.0.52
+    nlu-framework-worker-1: 192.168.0.53
+    nlu-framework-worker-2: 192.168.0.54
+    nlu-framework-worker-3: 192.168.0.55
+    nlu-framework-worker-4: 192.168.0.56
+    nlu-framework-worker-5: 192.168.0.57
+  ports:
+    nlu-framework-master-1: 9018
+    nlu-framework-master-2: 22
+    nlu-framework-master-3: 22
+    nlu-framework-worker-1: 22
+    nlu-framework-worker-2: 22
+    nlu-framework-worker-3: 22
+    nlu-framework-worker-4: 22
+    nlu-framework-worker-5: 22
+  gpunodes:
+    nlu-framework-worker-1: 192.168.0.53
+    nlu-framework-worker-2: 192.168.0.54
+  gpuports:
+    nlu-framework-worker-1: 22
+    nlu-framework-worker-2: 22
+  username: dev
+  password: cWhka3NjamZ3ajEh
+  networkcard: ens160
+

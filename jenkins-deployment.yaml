@@ -1,0 +1,26 @@
+# https://kubernetes.io/ko/docs/concepts/scheduling-eviction/assign-pod-node/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: kt
+  name: kt-api-server-deployment
+  labels:
+    app: kt-api-server
+spec:
+  selector:
+    matchLabels:
+      app: kt-api-server
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: kt-api-server
+    spec:
+      containers:
+        - name: kt-api-server
+          image: kw1.k8s.io:31129/nlu_public/kt-api-server:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+#      nodeSelector:
+#        key: worker

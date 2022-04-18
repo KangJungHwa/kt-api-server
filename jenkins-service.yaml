@@ -1,0 +1,14 @@
+# https://kubernetes.io/ko/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: kt
+  name: kt-api-server-service
+spec:
+  selector:
+    app: kt-api-server
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
