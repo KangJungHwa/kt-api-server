@@ -37,7 +37,9 @@ pipeline {
 //      }
 //    }
     stage('K8S Deployment') {
-      agent kubernetes
+      agent {
+        kubernetes
+      }
       steps {
         kubernetesDeploy configs: "jenkins-deployment.yaml", kubeconfigId: 'springboot'
       }
