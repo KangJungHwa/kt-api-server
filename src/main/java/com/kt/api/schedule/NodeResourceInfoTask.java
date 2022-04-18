@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -35,8 +36,8 @@ public class NodeResourceInfoTask extends RestTemplateController {
     @Autowired
     NodeRepository nodeRepository;
 
-    @Value("${app.backend.k8s.url}")
-    String k8sUrl;
+    @Value("${app.backend.k8s-apis.url}")
+    String k8sApisUrl;
 
     @Value("${app.backend.k8s.token}")
     String token;
@@ -46,14 +47,15 @@ public class NodeResourceInfoTask extends RestTemplateController {
     RestTemplate restTemplate;
 
 
-
+    private Map<String, String> gpunodes;
+    private Map<String, Integer> gpuports;
     //1분마다 실행 kube-apiserver 호출
     //http://172.30.1.81:30003/k8s-apis/metrics.k8s.io/v1beta1/nodes
 
-    //@Scheduled(cron="0 * * * * *")
+    @Scheduled(cron="0 * * * * *")
     public void run() throws JsonProcessingException {
         HttpEntity<String> entity = emptyGetRequestEntity(token);
-        String url = "http://172.30.1.81:30003/k8s-apis/metrics.k8s.io/v1beta1/nodes";
+        String url = k8sApisUrl+"/metrics.k8s.io/v1beta1/nodes";
 
         ResponseEntity<String> responseEntity= restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Nodes nodes = mapper.readValue(responseEntity.getBody(), Nodes.class);

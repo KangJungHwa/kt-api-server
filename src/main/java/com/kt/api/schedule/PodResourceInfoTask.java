@@ -32,8 +32,8 @@ public class PodResourceInfoTask extends RestTemplateController {
     @Autowired
     PodRepository podRepository;
 
-    @Value("${app.backend.k8s.url}")
-    String k8sUrl;
+    @Value("${app.backend.k8s-apis.url}")
+    String k8sApisUrl;
 
     @Value("${app.backend.k8s.token}")
     String token;
@@ -45,11 +45,11 @@ public class PodResourceInfoTask extends RestTemplateController {
     //1분마다 실행 kube-apiserver 호출
     //http://172.30.1.81:30003/k8s-apis/metrics.k8s.io/v1beta1/pods
 
-    //@Scheduled(cron="0 * * * * *")
+    @Scheduled(cron="0 * * * * *")
     public void run() throws JsonProcessingException {
 
         HttpEntity<String> entity = emptyGetRequestEntity(token);
-        String url = "http://172.30.1.81:30003/k8s-apis/metrics.k8s.io/v1beta1/pods";
+        String url = k8sApisUrl+"/metrics.k8s.io/v1beta1/pods";
 
         ResponseEntity<String> responseEntity= restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Pods pods = mapper.readValue(responseEntity.getBody(), Pods.class);

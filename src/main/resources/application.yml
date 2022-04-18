@@ -88,8 +88,8 @@ app:
 #################
 
 logging:
-  config: src/main/resources/logback.xml
-  #config: /opt/logback.xml
+  #config: src/main/resources/logback.xml
+  config: ./logback.xml
 #################
 ## Management
 #################
@@ -105,6 +105,9 @@ upload:
 ## k8s config
 #################
 k8s:
+  username: dev
+  password: cWhka3NjamZ3ajEh
+  networkcard: ens
   nodes:
     nlu-framework-master-1: 192.168.0.50
     nlu-framework-master-2: 192.168.0.51
@@ -129,7 +132,5 @@ k8s:
   gpuports:
     nlu-framework-worker-1: 22
     nlu-framework-worker-2: 22
-  username: dev
-  password: cWhka3NjamZ3ajEh
-  networkcard: ens160
+
 

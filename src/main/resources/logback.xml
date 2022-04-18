@@ -5,8 +5,9 @@
     <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
     <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
 
-
-    <property name="LOG_PATH" value="/ktnfs/logs"/>
+    <property name="LOG_PATH" value="/home/dev/kt-api-server/logs"/>
+<!--    <property name="LOG_PATH" value="/ktnfs/logs"/>-->
+<!--    <property name="LOG_PATH" value="/nfs_mount/api-server/logs"/>-->
     <property name="LOG_FILE_NAME" value="api-out"/>
     <property name="ERR_LOG_FILE_NAME" value="api-err"/>
     <property name="LOG_PATTERN" value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread %clr( %X{requestId:- })] [%logger{0}:%line] - %msg%n"/>

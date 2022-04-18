@@ -32,7 +32,7 @@ import java.util.Map;
 @Slf4j
 @Component
 @ConfigurationProperties(prefix = "k8s")
-public class GpuInfoTask<gpuEntity> {
+public class GpuInfoTask {
 
     @Autowired
     GpuRepository gpuRepository;
@@ -50,14 +50,14 @@ public class GpuInfoTask<gpuEntity> {
 
     @Scheduled(cron="0 * * * * *")
     public void run()  throws Exception {
+        Timestamp createTimestamp= TimeUtil.getNow();
         for (Object nodename:gpunodes.keySet()) {
              String responseStr=  SSHUtils.getSshResult(username,
                     EncryptionUtils.getDecodingStr(password),
                     gpunodes.get(nodename),
                     "nvidia-smi -q -x",
                     gpuports.get(nodename));
-           // System.out.println("=========================================================================================="+responseStr);
-            saveResult(nodename.toString(), responseStr);
+            saveResult(nodename.toString(), responseStr, createTimestamp);
         }
     }
 
@@ -67,7 +67,7 @@ public class GpuInfoTask<gpuEntity> {
      * @param nodename 노드명
      * @param responseStr 명령어 실행결과
      */
-    public void saveResult(String nodename,String responseStr) throws ParserConfigurationException, IOException, SAXException {
+    public void saveResult(String nodename,String responseStr,Timestamp createTimestamp) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory  =  DocumentBuilderFactory.newInstance();
         factory.setValidating (false);
 
@@ -96,7 +96,7 @@ public class GpuInfoTask<gpuEntity> {
         String total=null;
         String used =null;
         String free =null;
-        Timestamp createTimestamp= TimeUtil.getNow();
+
         List<GpuEntity> gpuList = new ArrayList<>();
         for (int temp = 0; temp < memoryList.getLength(); temp++) {
 
@@ -126,10 +126,6 @@ public class GpuInfoTask<gpuEntity> {
                  memory_util = element.getElementsByTagName("memory_util").item(0).getTextContent();
                  encoder_util = element.getElementsByTagName("encoder_util").item(0).getTextContent();
                  decoder_util = element.getElementsByTagName("decoder_util").item(0).getTextContent();
-                System.out.println("gpu_util : " + gpu_util);
-                System.out.println("memory_util : " + memory_util);
-                System.out.println("encoder_util : " + encoder_util);
-                System.out.println("decoder_util : " + decoder_util);
             }
         }
 
