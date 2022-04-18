@@ -89,7 +89,8 @@ app:
 
 logging:
   #config: src/main/resources/logback.xml
-  config: ./logback.xml
+  #config: ./logback.xml
+  config: /opt/logback.xml
 #################
 ## Management
 #################
