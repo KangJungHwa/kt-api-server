@@ -39,7 +39,7 @@ pipeline {
     stage('K8S Deployment') {
       agent any
       steps {
-        kubernetesDeploy configs: "jenkins-deployment.yaml", kubeconfigId: 'springboot'
+        kubernetesDeploy configs: "jenkins-deployment.yaml", kubeconfigId: 'kubeconfig'
       }
     }
 //    stage('K8S Deployment') {
