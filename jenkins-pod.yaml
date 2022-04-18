@@ -10,9 +10,9 @@ metadata:
 spec:
   containers:
     - name: kt-api-server
-      image: kw1.k8s.io:31129/nlu_public/kt-api-server:latest
+      image: harbor.k8s.io:30082/nlu_project/kt-api-server:latest
       imagePullPolicy: IfNotPresent
-  imagePullSecrets:
-    - name: harbor
+#  imagePullSecrets:
+#    - name: harbor
 #  nodeSelector: # 7 node(s) didn't match node selector
 #    key: worker
