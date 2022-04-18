@@ -28,7 +28,7 @@ pipeline {
     stage('K8S Deployment & service') {
       agent any
       steps {
-        kubernetesDeploy configs: "jenkins-{deployment,service}.yaml", kubeconfigId: 'kubeconfig'
+        kubernetesDeploy configs: "jenkins-*.yaml", kubeconfigId: 'kubeconfig'
       }
     }
   }
