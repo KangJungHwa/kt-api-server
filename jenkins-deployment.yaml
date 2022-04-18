@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: kt
+#  namespace: kt
   name: kt-api-server-deployment
   labels:
     app: kt-api-server
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: kt-api-server
-          image: kw1.k8s.io:31129/nlu_public/kt-api-server:latest
+          image: harbor.k8s.io:30082/nlu_project/kt-api-server:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080

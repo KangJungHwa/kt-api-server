@@ -26,14 +26,20 @@ pipeline {
         }
       }
     }
-    stage('K8S Pod') {
-      agent {
-        kubernetes {
-          yamlFile 'jenkins-pod.yaml'
-        }
-      }
+//    stage('K8S Pod') {
+//      agent {
+//        kubernetes {
+//          yamlFile 'jenkins-pod.yaml'
+//        }
+//      }
+//      steps {
+//        sh 'hostname'
+//      }
+//    }
+    stage('K8S Deployment') {
+      agent kubernetes
       steps {
-        sh 'hostname'
+        kubernetesDeploy configs: "jenkins-deployment.yaml", kubeconfigId: 'springboot'
       }
     }
 //    stage('K8S Deployment') {
