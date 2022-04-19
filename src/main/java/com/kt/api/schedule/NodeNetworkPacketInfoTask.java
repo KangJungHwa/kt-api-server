@@ -51,8 +51,7 @@ public class NodeNetworkPacketInfoTask  {
 
     @Scheduled(cron="0 * * * * *")
     public void run() throws Exception {
-        System.out.println("nework monitoring execute~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        System.out.println("nework monitoring execute~~~~~~~~~~~~~~~~~~~~~~~~~~~~networkcard~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+networkcard);
+
         for (Object nodename:nodes.keySet()) {
            String responseStr=  SSHUtils.getSshResult(username,
                     EncryptionUtils.getDecodingStr(password),
