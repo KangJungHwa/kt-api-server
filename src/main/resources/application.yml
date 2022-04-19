@@ -100,7 +100,7 @@ management:
     enabled-by-default: true
 
 upload:
-  path: "/tmp"
+  path: "/nfs_mount/upload"
 
 #################
 ## k8s config

@@ -23,3 +23,5 @@ command line 실행 명령
 ```$xslt
 nohup java -jar 'kt-api-server-1.0.0-SNAPSHOT.jar' & > /dev/null
 ```
+
+https://brunch.co.kr/@springboot/298
