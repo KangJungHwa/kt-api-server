@@ -20,7 +20,21 @@ public class MapUtils {
         map.put(key, value);
         return map;
     }
-
+    /**
+     * 지정한 Key Value를 가진 Map을 생성한다.
+     *
+     * @param key1   Map 생성시 초기 key
+     * @param value1 Map 생성시 초기 Key에 대한 Value
+     * @param key2   Map 생성시 초기 key
+     * @param value2 Map 생성시 초기 Key에 대한 Value
+     * @return 새로 생성한 Map
+     */
+    public static Map<String, Object> map(String key1, Object value1, String key2, Object value2) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(key1, value1);
+        map.put(key2, value2);
+        return map;
+    }
     /**
      * 지정한 Key Value를 가진 Map을 생성한다.
      *
