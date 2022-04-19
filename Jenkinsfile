@@ -13,7 +13,6 @@ pipeline {
         sh 'ls -alF'
         sh 'chmod 755 mvnw'
         sh './mvnw -Dmaven.test.skip clean package'
-//        sh 'sleep 3600'
         sh 'ls -alF target'
         sh "docker login -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW} ${REGISTRY}"
         script {
@@ -26,45 +25,11 @@ pipeline {
         }
       }
     }
-    stage('K8S Pod') {
-      agent {
-        kubernetes {
-          yamlFile 'jenkins-pod.yaml'
-        }
-      }
+    stage('K8S Deployment & service') {
+      agent any
       steps {
-        sh 'hostname'
+        kubernetesDeploy configs: "jenkins-*.yaml", kubeconfigId: 'kubeconfig'
       }
     }
-//    stage('K8S Deployment') {
-//      agent {
-//        kubernetes {
-//          yamlFile 'jenkins-deployment.yaml'
-//        }
-//      }
-//      steps {
-//        sh 'hostname'
-//      }
-//    }
-//    stage('K8S Service') {
-//      agent {
-//        kubernetes {
-//          yamlFile 'jenkins-service.yaml'
-//        }
-//      }
-//      steps {
-//        sh 'hostname'
-//      }
-//    }
-//    stage('K8S Ingress') {
-//      agent {
-//        kubernetes {
-//          yamlFile 'jenkins-ingress.yaml'
-//        }
-//      }
-//      steps {
-//        sh 'hostname'
-//      }
-//    }
   }
 }
