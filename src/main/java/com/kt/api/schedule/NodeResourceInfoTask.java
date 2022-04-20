@@ -52,7 +52,7 @@ public class NodeResourceInfoTask extends RestTemplateController {
     //1분마다 실행 kube-apiserver 호출
     //http://172.30.1.81:30003/k8s-apis/metrics.k8s.io/v1beta1/nodes
 
-    @Scheduled(cron="0 * * * * *")
+    //@Scheduled(cron="0 * * * * *")
     public void run() throws JsonProcessingException {
         HttpEntity<String> entity = emptyGetRequestEntity(token);
         String url = k8sApisUrl+"/metrics.k8s.io/v1beta1/nodes";
