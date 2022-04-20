@@ -9,6 +9,7 @@ import com.kt.api.util.EncryptionUtils;
 import com.kt.api.util.MapUtils;
 import com.kt.api.util.SSHUtils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,6 +53,7 @@ public class KubeletLogController {
         this.ports = ports;
     }
 
+    @ApiOperation("kubelet 로그 검색")
     @GetMapping("/")
     public String getKubeletLog(@RequestBody @Valid KubeletLogReqest request) throws InterruptedException, JSchException {
         log.info("{}", String.format("'%s'node의 kubelet 로그를 검색합니다.", request.getNodeName()));

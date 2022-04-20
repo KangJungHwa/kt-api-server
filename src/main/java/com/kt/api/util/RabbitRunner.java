@@ -10,7 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 //메세지 큐 발생을 위한 테스트 클래스
-@Component
+//@Component
 public class RabbitRunner implements CommandLineRunner{
 
     private static final String topicExchange = "topic.nlu";

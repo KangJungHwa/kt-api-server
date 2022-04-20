@@ -24,7 +24,7 @@ public class SwaggerConfiguration {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.ant("/backend/**/*"))
+                .paths(PathSelectors.ant("/**/*"))
                 .build()
                 .apiInfo(apiInfo());
     }
