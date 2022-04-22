@@ -18,7 +18,8 @@ spec:
     spec:
       containers:
         - name: kt-api-server
-          image: harbor.k8s.io:30082/nlu_project/kt-api-server:latest
+          #image: harbor.k8s.io:30082/nlu_project/kt-api-server:latest
+          image: harbor.k8s.io:30082/nlu_project/kt-api-server:${env.BUILD_NUMBER}
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
