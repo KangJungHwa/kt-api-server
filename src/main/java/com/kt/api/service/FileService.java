@@ -32,8 +32,26 @@ public class FileService {
         }
     }
 
-    public void save(MultipartFile file) {
+//    public void save(MultipartFile file) {
+//        try {
+//            Path root = Paths.get(uploadPath);
+//            if (!Files.exists(root)) {
+//                init();
+//            }
+//            Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
+//        } catch (Exception e) {
+//            throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+//        }
+//    }
+
+    /**
+     * 사용자가 지정한 패스에 업로드
+     * @param file
+     * @param path
+     */
+    public void save(MultipartFile file,String path) {
         try {
+            this.uploadPath="/nfs_mount/"+path;
             Path root = Paths.get(uploadPath);
             if (!Files.exists(root)) {
                 init();
@@ -43,7 +61,6 @@ public class FileService {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
     }
-
     public Resource load(String filename) {
         try {
             Path file = Paths.get(uploadPath)

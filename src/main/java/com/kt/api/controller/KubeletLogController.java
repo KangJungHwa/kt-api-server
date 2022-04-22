@@ -58,7 +58,6 @@ public class KubeletLogController {
     public String getKubeletLog(@RequestBody @Valid KubeletLogReqest request) throws InterruptedException, JSchException {
         log.info("{}", String.format("'%s'node의 kubelet 로그를 검색합니다.", request.getNodeName()));
         long startMillis = System.currentTimeMillis();
-
         String responseStr=  SSHUtils.getSshResult(username,
                 EncryptionUtils.getDecodingStr(password),
                 nodes.get(request.getNodeName()),
@@ -67,8 +66,6 @@ public class KubeletLogController {
 
         String endMillis = String.valueOf(System.currentTimeMillis() - startMillis);
         log.info("총 처리 시간은 {}ms 입니다.", endMillis);
-
         return responseStr;
-
     }
 }
