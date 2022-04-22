@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-#  namespace: kt
+  namespace: kt
   name: kt-api-server-deployment
   labels:
     app: kt-api-server

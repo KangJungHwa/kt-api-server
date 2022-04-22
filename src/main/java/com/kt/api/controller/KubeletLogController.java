@@ -53,6 +53,17 @@ public class KubeletLogController {
         this.ports = ports;
     }
 
+
+    /**
+     * curl --request GET \
+     *    --url 10.233.5.167:8080/log/kubelet/ \
+     *    --header 'Content-Type: application/json' \
+     *    --data '{"nodeName":"nlu-framework-worker-1","sinceMinutes":10}'
+     * @param request
+     * @return
+     * @throws InterruptedException
+     * @throws JSchException
+     */
     @ApiOperation("kubelet 로그 검색")
     @GetMapping("/")
     public String getKubeletLog(@RequestBody @Valid KubeletLogReqest request) throws InterruptedException, JSchException {
