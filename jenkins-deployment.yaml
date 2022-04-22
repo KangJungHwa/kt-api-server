@@ -23,5 +23,12 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: service-api-volume
+              mountPath: /nfs_mount/service-api/upload
+      volumes:
+        - name: service-api-volume
+          persistentVolumeClaim:
+            claimName: service-api-pvc
 #      nodeSelector:
 #        key: worker
