@@ -9,4 +9,4 @@ spec:
     - ReadWriteMany
   nfs:
     server: 192.168.0.211
-    path: "/nfs_mount"
+    path: "/mnt/nfs"
