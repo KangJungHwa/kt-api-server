@@ -103,7 +103,7 @@ management:
     enabled-by-default: true
 
 upload:
-  path: "/service-api/upload"
+  path: "/service-api/upload/"
 
 #################
 ## k8s config
