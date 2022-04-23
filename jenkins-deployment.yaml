@@ -24,8 +24,8 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - mountPath: /data/upload
-              name: service-api-volume
+            - name: service-api-volume
+            - mountPath: /service-api/logs
       volumes:
         - name: service-api-volume
           persistentVolumeClaim:
