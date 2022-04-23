@@ -24,7 +24,7 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - mountPath: /service-api/logs
+            - mountPath: /service-api # /mnt/nfs/kt-service-api-pvc-pvc-73c7efb8-3b67-4173-ae97-307505d128e4 경로가 service-api로 마운트됨.
               name: service-api-volume
       volumes:
         - name: service-api-volume
