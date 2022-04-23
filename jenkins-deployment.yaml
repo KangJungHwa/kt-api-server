@@ -24,7 +24,7 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - mountPath: /nfs_mount
+            - mountPath: /data/upload
               name: service-api-volume
       volumes:
         - name: service-api-volume
