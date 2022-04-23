@@ -46,6 +46,7 @@ public class FileService {
 
     /**
      * 사용자가 지정한 패스에 업로드
+     * /pv 경로 + upload + 사용자 지정경로
      * @param file
      * @param path
      */
