@@ -26,7 +26,7 @@ spec:
           volumeMounts:
             - mountPath: /service-api/logs
               name: service-api-volume
-     volumes:
+      volumes:
         - name: service-api-volume
           persistentVolumeClaim:
             claimName: service-api-pvc
