@@ -19,7 +19,8 @@
             <id>nexus</id>
             <name>nexus</name>
 <!--            <url>http://nexus.nexus.svc.cluster.local:8081/repository/nexus/</url>-->
-           <url>http://nexus.k8s.io:30083/repository/nexus/</url>
+            <url>http://10.233.16.170:8081/repository/nexus/</url>
+<!--           <url>http://nexus.k8s.io:30083/repository/nexus/</url>-->
             <mirrorOf>*</mirrorOf>
         </mirror>
         <!-- 		<mirror>
