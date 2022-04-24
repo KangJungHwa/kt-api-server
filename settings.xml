@@ -15,19 +15,19 @@
         </server>
     </servers>
     <mirrors>
-        <mirror>
-            <id>nexus</id>
-            <name>nexus</name>
-<!--            <url>http://nexus.nexus.svc.cluster.local:8081/repository/nexus/</url>-->
-            <url>http://10.233.16.170:8081/repository/nexus/</url>
-<!--           <url>http://nexus.k8s.io:30083/repository/nexus/</url>-->
-            <mirrorOf>*</mirrorOf>
-        </mirror>
-        <!-- 		<mirror>
+<!--        <mirror>-->
+<!--            <id>nexus</id>-->
+<!--            <name>nexus</name>-->
+<!--&lt;!&ndash;            <url>http://nexus.nexus.svc.cluster.local:8081/repository/nexus/</url>&ndash;&gt;-->
+<!--            <url>http://10.233.16.170:8081/repository/nexus/</url>-->
+<!--&lt;!&ndash;           <url>http://nexus.k8s.io:30083/repository/nexus/</url>&ndash;&gt;-->
+<!--            <mirrorOf>*</mirrorOf>-->
+<!--        </mirror>-->
+         		<mirror>
                     <id>central</id>
                     <name>Central Repository</name>
                     <url>https://repo.maven.apache.org/maven2</url>
                     <mirrorOf>central</mirrorOf>
-                </mirror> -->
+                </mirror>
     </mirrors>
 </settings>
