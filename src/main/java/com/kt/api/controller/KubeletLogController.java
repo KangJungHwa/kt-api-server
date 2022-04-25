@@ -55,10 +55,10 @@ public class KubeletLogController {
 
 
     /**
-     * curl --request GET \
-     *    --url 10.233.5.167:8080/log/kubelet/ \
-     *    --header 'Content-Type: application/json' \
-     *    --data '{"nodeName":"nlu-framework-worker-1","sinceMinutes":10}'
+     curl --request GET \
+     --url http://service-api.k8s.io:30083/log/kubelet/ \
+     --header 'Content-Type: application/json' \
+     --data '{"nodeName":"nlu-framework-worker-1","sinceMinutes":10}'
      * @param request
      * @return
      * @throws InterruptedException

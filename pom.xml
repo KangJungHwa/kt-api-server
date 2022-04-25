@@ -263,7 +263,68 @@
     <!-- ======================= -->
     <!--  Dependency Management  -->
     <!-- ======================= -->
-
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--            <id>kt-snapshot</id>-->
+<!--            <name>kt-snapshot</name>-->
+<!--            <url>http://nexus.k8s.io:30083/repository/kt-snapshot/</url>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--            <id>kt-release</id>-->
+<!--            <name>kt-release</name>-->
+<!--            <url>http://nexus.k8s.io:30083/repository/kt-release/</url>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <snapshots>-->
+<!--                <enabled>false</enabled>-->
+<!--            </snapshots>-->
+<!--            <id>nexus</id>-->
+<!--            <name>nexus</name>-->
+<!--            <url>http://nexus.k8s.io:30083/repository/nexus/</url>-->
+<!--        </repository>-->
+<!--    </repositories>-->
+<!--    <pluginRepositories>-->
+<!--        <pluginRepository>-->
+<!--            <releases>-->
+<!--                <updatePolicy>never</updatePolicy>-->
+<!--            </releases>-->
+<!--            <snapshots>-->
+<!--                <enabled>false</enabled>-->
+<!--            </snapshots>-->
+<!--            <id>nexus</id>-->
+<!--            <name>nexus</name>-->
+<!--            <url>hhttp://nexus.k8s.io:30083/repository/nexus/</url>-->
+<!--        </pluginRepository>-->
+<!--    </pluginRepositories>-->
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>kt-nexus</id>
+            <name>kt-nexus Repository</name>
+            <url>http://nexus.k8s.io:30083/repository/maven-public/</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>kt-nexus</id>
+            <name>kt-nexus Repository</name>
+            <url>http://nexus.k8s.io:30083/repository/maven-public/</url>
+        </pluginRepository>
+    </pluginRepositories>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -275,27 +336,14 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </pluginRepository>
-    </pluginRepositories>
+<!--    <distributionManagement>-->
+<!--        <snapshotRepository>-->
+<!--            <id>nexus</id>-->
+<!--            <url>http://nexus.k8s.io:30083/repository/nexus/</url>-->
+<!--        </snapshotRepository>-->
+<!--        <repository>-->
+<!--            <id>nexus</id>-->
+<!--            <url>http://nexus.k8s.io:30083/repository/nexus/</url>-->
+<!--        </repository>-->
+<!--    </distributionManagement>-->
 </project>

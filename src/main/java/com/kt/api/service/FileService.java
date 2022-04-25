@@ -52,7 +52,7 @@ public class FileService {
      */
     public void save(MultipartFile file,String path) {
         try {
-            this.uploadPath=uploadPath+path;
+            this.uploadPath=this.uploadPath+path;
             Path root = Paths.get(uploadPath);
             if (!Files.exists(root)) {
                 init();
