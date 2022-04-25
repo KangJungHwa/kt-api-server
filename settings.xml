@@ -4,35 +4,17 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <servers>
         <server>
-            <id>kt-snapshot</id>
-            <username>admin</username>
-            <password>Ktaicc@1234</password>
-        </server>
-        <server>
-            <id>kt-release</id>
-            <username>admin</username>
-            <password>Ktaicc@1234</password>
-        </server>
-        <server>
-            <id>nexus</id>
+            <id>kt-nexus</id>
             <username>admin</username>
             <password>Ktaicc@1234</password>
         </server>
     </servers>
     <mirrors>
         <mirror>
-            <id>nexus</id>
-            <name>nexus</name>
-<!-- <url>http://nexus.nexus.svc.cluster.local:8081/repository/nexus/</url>&ndash;&gt;-->
-<!--  <url>http://10.233.16.170:8081/repository/nexus/</url>-->
-           <url>http://nexus.k8s.io:30083/repository/nexus/</url>
-            <mirrorOf>*</mirrorOf>
+            <id>kt-nexus</id>
+            <name>kt-nexus</name>
+            <url>http://nexus.k8s.io:30083/repository/maven-public/</url>
+            <mirrorOf>central</mirrorOf>
         </mirror>
-<!--        <mirror>-->
-<!--            <id>central</id>-->
-<!--            <name>Central Repository</name>-->
-<!--            <url>https://repo.maven.apache.org/maven2</url>-->
-<!--            <mirrorOf>central</mirrorOf>-->
-<!--        </mirror>-->
     </mirrors>
 </settings>
