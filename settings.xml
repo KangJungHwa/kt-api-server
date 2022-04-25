@@ -13,7 +13,8 @@
         <mirror>
             <id>kt-nexus</id>
             <name>kt-nexus</name>
-            <url>http://nexus.k8s.io:30083/repository/maven-public/</url>
+            <url>http://10.233.40.101:8081/repository/maven-public/</url>
+<!--            <url>http://nexus.k8s.io:30083/repository/maven-public/</url>-->
             <mirrorOf>central</mirrorOf>
         </mirror>
     </mirrors>
