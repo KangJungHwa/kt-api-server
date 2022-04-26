@@ -51,7 +51,6 @@ public class NodeNetworkPacketInfoTask  {
 
     @Scheduled(cron="0 * * * * *")
     public void run() throws Exception {
-
         for (Object nodename:nodes.keySet()) {
            String responseStr=  SSHUtils.getSshResult(username,
                     EncryptionUtils.getDecodingStr(password),
@@ -79,7 +78,7 @@ public class NodeNetworkPacketInfoTask  {
         Long txErrors=0L;
         String txHumanBytes=null;
         List<NetworkEntity> networkList = new ArrayList<>();
-        Timestamp createTimestamp=TimeUtil.getNow();
+        Timestamp createTimestamp= TimeUtil.getNow();
         for (int i = 0; i < result.length; i++) {
             String line=result[i].trim();
             if(line.startsWith(networkcard)){
