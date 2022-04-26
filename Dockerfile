@@ -1,4 +1,4 @@
-FROM openjdk:11-ea-jre
+FROM openjdk:8u92-jre-alpine
 
 LABEL org.opencontainers.image.authors="haneul.kim@data-dynamics.io"
 LABEL title="KT API Server"
