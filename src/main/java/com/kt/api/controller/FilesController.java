@@ -63,46 +63,46 @@ public class FilesController {
         }
     }
 
-    @GetMapping
-    public ResponseEntity<List<FileData>> getListFiles() {
-        List<FileData> fileInfos = fileService.loadAll()
-                .stream()
-                .map(this::pathToFileData)
-                .collect(Collectors.toList());
+//    @GetMapping
+//    public ResponseEntity<List<FileData>> getListFiles() {
+//        List<FileData> fileInfos = fileService.loadAll()
+//                .stream()
+//                .map(this::pathToFileData)
+//                .collect(Collectors.toList());
+//
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(fileInfos);
+//    }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(fileInfos);
-    }
+//    @DeleteMapping
+//    public void delete() {
+//        fileService.deleteAll();
+//    }
+//
+//    private FileData pathToFileData(Path path) {
+//        FileData fileData = new FileData();
+//        String filename = path.getFileName()
+//                .toString();
+//        fileData.setFilename(filename);
+//        fileData.setUrl(MvcUriComponentsBuilder.fromMethodName(FilesController.class, "getFile", filename)
+//                .build()
+//                .toString());
+//        try {
+//            fileData.setSize(Files.size(path));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException("Error: " + e.getMessage());
+//        }
+//
+//        return fileData;
+//    }
 
-    @DeleteMapping
-    public void delete() {
-        fileService.deleteAll();
-    }
-
-    private FileData pathToFileData(Path path) {
-        FileData fileData = new FileData();
-        String filename = path.getFileName()
-                .toString();
-        fileData.setFilename(filename);
-        fileData.setUrl(MvcUriComponentsBuilder.fromMethodName(FilesController.class, "getFile", filename)
-                .build()
-                .toString());
-        try {
-            fileData.setSize(Files.size(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error: " + e.getMessage());
-        }
-
-        return fileData;
-    }
-
-    @GetMapping("{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        Resource file = fileService.load(filename);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                .body(file);
-    }
+//    @GetMapping("{filename:.+}")
+//    @ResponseBody
+//    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+//        Resource file = fileService.load(filename);
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+//                .body(file);
+//    }
 }
