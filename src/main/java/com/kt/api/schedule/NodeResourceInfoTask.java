@@ -54,11 +54,16 @@ public class NodeResourceInfoTask extends RestTemplateController {
 
     @Scheduled(cron="0 * * * * *")
     public void run() throws JsonProcessingException {
+        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Node Resource Monitor start~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         HttpEntity<String> entity = emptyGetRequestEntity(token);
         String url = k8sApisUrl+"/metrics.k8s.io/v1beta1/nodes";
+        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Node Resource Monitor url~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+url);
 
         ResponseEntity<String> responseEntity= restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Nodes nodes = mapper.readValue(responseEntity.getBody(), Nodes.class);
+
+        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Node Resource Monitor Body~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+responseEntity.getBody());
+
         List<NodeEntity> nodeUsageList =
                 new ArrayList<>();
         java.sql.Timestamp now = TimeUtil.getNow();
