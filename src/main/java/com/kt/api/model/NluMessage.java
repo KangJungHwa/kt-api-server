@@ -13,4 +13,5 @@ public class NluMessage {
     private String content;
     private String routingKey;
 
+
 }

@@ -54,6 +54,9 @@ public class FileService {
         try {
             this.uploadPath=this.uploadPath+path;
             Path root = Paths.get(uploadPath);
+
+            //파일 체크를 할때 symboliclink가 있는지 체크를  해야 할 수도 있음.
+            // java.nio.file.Files.isSymbolicLink(Path path)
             if (!Files.exists(root)) {
                 init();
             }
