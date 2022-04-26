@@ -50,13 +50,15 @@ public class GpuInfoTask {
 
 //    @Scheduled(cron="0 * * * * *")
     public void run()  throws Exception {
+
+        Timestamp createTimestamp= TimeUtil.getNow();
         for (Object nodename:gpunodes.keySet()) {
              String responseStr=  SSHUtils.getSshResult(username,
                     EncryptionUtils.getDecodingStr(password),
                     gpunodes.get(nodename),
                     "nvidia-smi -q -x",
                     gpuports.get(nodename));
-            saveResult(nodename.toString(), responseStr);
+            saveResult(nodename.toString(), responseStr,createTimestamp);
         }
     }
 
@@ -66,7 +68,7 @@ public class GpuInfoTask {
      * @param nodename 노드명
      * @param responseStr 명령어 실행결과
      */
-    public void saveResult(String nodename,String responseStr) throws ParserConfigurationException, IOException, SAXException {
+    public void saveResult(String nodename,String responseStr,Timestamp createTimestamp) throws ParserConfigurationException, IOException, SAXException {
         DocumentBuilderFactory factory  =  DocumentBuilderFactory.newInstance();
         factory.setValidating (false);
 
@@ -128,7 +130,7 @@ public class GpuInfoTask {
             }
         }
 
-        Timestamp createTimestamp= TimeUtil.getNow();
+
 
             GpuEntity gpuEntity = GpuEntity.builder()
                     .nodename(nodename)

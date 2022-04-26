@@ -51,13 +51,14 @@ public class NodeNetworkPacketInfoTask  {
 
     @Scheduled(cron="0 * * * * *")
     public void run() throws Exception {
+        Timestamp createTimestamp= TimeUtil.getNow();
         for (Object nodename:nodes.keySet()) {
            String responseStr=  SSHUtils.getSshResult(username,
                     EncryptionUtils.getDecodingStr(password),
                     nodes.get(nodename),
                     "ifconfig",
                      ports.get(nodename));
-            saveResult(nodename.toString(), responseStr,networkcard);
+            saveResult(nodename.toString(), responseStr,networkcard,createTimestamp);
         }
     }
 
@@ -66,7 +67,7 @@ public class NodeNetworkPacketInfoTask  {
      * @param nodename 노드명
      * @param responseStr 명령어 실행결과
      */
-    public void saveResult(String nodename,String responseStr,String networkcard){
+    public void saveResult(String nodename,String responseStr,String networkcard,Timestamp createTimestamp){
         String[] result = responseStr.split("\n");
         boolean isCheckStart=false;
         Long rxPackets=0L;
@@ -78,7 +79,7 @@ public class NodeNetworkPacketInfoTask  {
         Long txErrors=0L;
         String txHumanBytes=null;
         List<NetworkEntity> networkList = new ArrayList<>();
-        Timestamp createTimestamp= TimeUtil.getNow();
+
         for (int i = 0; i < result.length; i++) {
             String line=result[i].trim();
             if(line.startsWith(networkcard)){
