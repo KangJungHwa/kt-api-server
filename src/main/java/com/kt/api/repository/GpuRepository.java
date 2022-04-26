@@ -1,7 +1,7 @@
 package com.kt.api.repository;
 
 import com.kt.api.model.entity.GpuEntity;
-import com.kt.api.model.entity.NodeEntity;
+import com.kt.api.model.entity.GpuEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

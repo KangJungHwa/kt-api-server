@@ -1,7 +1,6 @@
 package com.kt.api.repository;
 
 import com.kt.api.model.entity.NetworkEntity;
-import com.kt.api.model.entity.NodeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
