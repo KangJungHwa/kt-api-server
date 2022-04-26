@@ -47,22 +47,17 @@ public class NodeResourceInfoTask extends RestTemplateController {
     RestTemplate restTemplate;
 
 
-    private Map<String, String> gpunodes;
-    private Map<String, Integer> gpuports;
+
     //1분마다 실행 kube-apiserver 호출
     //http://172.30.1.81:30003/k8s-apis/metrics.k8s.io/v1beta1/nodes
 
-    @Scheduled(cron="0 * * * * *")
+   // @Scheduled(cron="0 * * * * *")
     public void run() throws JsonProcessingException {
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Node Resource Monitor start~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         HttpEntity<String> entity = emptyGetRequestEntity(token);
         String url = k8sApisUrl+"/metrics.k8s.io/v1beta1/nodes";
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Node Resource Monitor url~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+url);
 
         ResponseEntity<String> responseEntity= restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Nodes nodes = mapper.readValue(responseEntity.getBody(), Nodes.class);
-
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Node Resource Monitor Body~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+responseEntity.getBody());
 
         List<NodeEntity> nodeUsageList =
                 new ArrayList<>();
@@ -70,7 +65,7 @@ public class NodeResourceInfoTask extends RestTemplateController {
         for(int i=0; i<nodes.getItems().size(); i++) {
 
             String nodeRole=null;
-            if (nodes.getItems().get(i).getMetadata().getLabels().getNodeRole() != null) {
+            if (nodes.getItems().get(i).getMetadata().getLabels().getNodeRole().equals("master")) {
                 nodeRole = "master";
             } else {
                 nodeRole = "worker";

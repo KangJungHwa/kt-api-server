@@ -48,7 +48,7 @@ public class GpuInfoTask {
 //    //아래 명령어를 수행하는 shell을 1분마다 실행
 //    //for i in {3..4} ; do echo 192.168.0.5${i} ; done | xargs -P 1 -I {} ssh {} "nvidia-smi -q -x"
 
-    @Scheduled(cron="0 * * * * *")
+//    @Scheduled(cron="0 * * * * *")
     public void run()  throws Exception {
         for (Object nodename:gpunodes.keySet()) {
              String responseStr=  SSHUtils.getSshResult(username,

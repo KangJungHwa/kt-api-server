@@ -45,15 +45,12 @@ public class PodResourceInfoTask extends RestTemplateController {
     //1분마다 실행 kube-apiserver 호출
     //http://172.30.1.81:30003/k8s-apis/metrics.k8s.io/v1beta1/pods
 
-    @Scheduled(cron="0 * * * * *")
+   // @Scheduled(cron="0 * * * * *")
     public void run() throws JsonProcessingException {
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~pod Resource Monitor start~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         HttpEntity<String> entity = emptyGetRequestEntity(token);
         String url = k8sApisUrl+"/metrics.k8s.io/v1beta1/pods";
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~pod Resource Monitor url~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+url);
         ResponseEntity<String> responseEntity= restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Pods pods = mapper.readValue(responseEntity.getBody(), Pods.class);
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~pod Resource Monitor Body~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+responseEntity.getBody());
         List<PodEntity> podUsageList =
                 new ArrayList<>();
         java.sql.Timestamp now = TimeUtil.getNow();
