@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import com.kt.api.util.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -23,15 +24,15 @@ public class FileService {
     @Value("${upload.path}")
     private String uploadPath;
 
-    @PostConstruct
-    public void init() {
-        try {
-            Files.createDirectories(Paths.get(uploadPath));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not create upload folder!");
-        }
-    }
 
+//    public void createSymbolicLink(Path source, Path target) {
+//        try {
+//            Files.createSymbolicLink(source,target);
+//            //Files.createDirectories(Paths.get(uploadPath));
+//        } catch (IOException e) {
+//            throw new RuntimeException("Could not create upload folder!");
+//        }
+//    }
 //    public void save(MultipartFile file) {
 //        try {
 //            Path root = Paths.get(uploadPath);
@@ -52,15 +53,21 @@ public class FileService {
      */
     public void save(MultipartFile file,String path) {
         try {
-            this.uploadPath=this.uploadPath+path;
-            Path root = Paths.get(uploadPath);
+            String linkPath=this.uploadPath = this.uploadPath + path;
 
             //파일 체크를 할때 symboliclink가 있는지 체크를  해야 할 수도 있음.
             // java.nio.file.Files.isSymbolicLink(Path path)
-            if (!Files.exists(root)) {
-                init();
+            if (!Files.isSymbolicLink(Paths.get(linkPath))){
+                String targetPath="/nfs_mount/upload/"+path;
+                FileUtils.createDir(targetPath);
+
+                FileUtils.createSymbolicLink(linkPath,targetPath);
             }
-            Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()));
+            //디렉토리를 생성할 경우.
+            //if (!Files.exists(fullpath)) {
+            //    createDir();
+            //}
+            Files.copy(file.getInputStream(), Paths.get(linkPath).resolve(file.getOriginalFilename()));
         } catch (Exception e) {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }

@@ -3,6 +3,10 @@ package com.kt.api.util;
 import org.apache.commons.lang.SystemUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 
@@ -146,4 +150,28 @@ public class FileUtils {
         value *= Long.signum(bytes);
         return String.format("%.1f %ciB", value / 1024.0, ci.current());
     }
+
+    /**
+     * 디렉토리를 생성할 경우.
+     */
+    public static void createDir(String path) {
+        try {
+            Files.createDirectories(Paths.get(path));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not create Directory!");
+        }
+    }
+    /**
+     * 심볼릭 링크를 생성할 경우
+     */
+    public static void createSymbolicLink(String link, String target) {
+        try {
+            Files.createSymbolicLink(Paths.get(link),Paths.get(target));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not create symbolic link!");
+        }
+    }
+
+
+
 }
