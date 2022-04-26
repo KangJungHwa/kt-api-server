@@ -12,7 +12,7 @@ pipeline {
         checkout scm
         sh 'ls -alF'
         sh 'chmod 755 mvnw'
-        sh './mvnw -s -Dmaven.test.skip clean package'
+        sh './mvnw -Dmaven.test.skip clean package'
         //sh './mvnw -s ./settings.xml -Dmaven.test.skip clean package'
         sh 'ls -alF target'
         sh "docker login -u ${REGISTRY_CREDS_USR} -p ${REGISTRY_CREDS_PSW} ${REGISTRY}"
