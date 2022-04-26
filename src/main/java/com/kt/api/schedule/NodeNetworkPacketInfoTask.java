@@ -49,7 +49,7 @@ public class NodeNetworkPacketInfoTask  {
         this.ports = ports;
     }
 
-    //@Scheduled(cron="0 * * * * *")
+    @Scheduled(cron="0 * * * * *")
     public void run() throws Exception {
 
         for (Object nodename:nodes.keySet()) {
