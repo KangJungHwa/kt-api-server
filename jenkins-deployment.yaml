@@ -17,12 +17,12 @@ spec:
         app: kt-api-server
     spec:
       containers:
+        - name: kt-api-server
         - env:
             - name: JAVA_TOOL_OPTIONS
               value: "-Xms1024m -Xmx2048m"
             - name: TZ
               value: Asia/Seoul
-        - name: kt-api-server
           #image: harbor.k8s.io:30082/nlu_project/kt-api-server:latest
           image: harbor.k8s.io:30082/nlu_project/kt-api-server:${BUILD_NUMBER}
           imagePullPolicy: Always
