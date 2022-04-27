@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface NetworkRepository extends JpaRepository<NetworkEntity, Long> {
     Optional<NetworkEntity> findByNodename(String desc);
 
-    @Query(value= "delete FROM monitoring.network_status where create_ts < DATE_ADD(NOW(), INTERVAL -30 MINUTES)",
+    @Query(value= "delete FROM monitoring.network_status where create_ts < DATE_ADD(NOW(), INTERVAL -30 MINUTE)",
             nativeQuery = true)
     void deleteNetworkTableNative();
 }

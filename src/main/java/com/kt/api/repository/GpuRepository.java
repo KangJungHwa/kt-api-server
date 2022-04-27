@@ -14,7 +14,7 @@ public interface GpuRepository extends JpaRepository<GpuEntity, Long> {
     Optional<GpuEntity> findByNodename(String desc);
 
 
-    @Query(value= "delete FROM monitoring.gpu_status where create_ts < DATE_ADD(NOW(), INTERVAL -30 MINUTES)",
+    @Query(value= "delete FROM monitoring.gpu_status where create_ts < DATE_ADD(NOW(), INTERVAL -30 MINUTE)",
             nativeQuery = true)
     void deleteGpuTableNative();
 }

@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface NodeRepository extends JpaRepository<NodeEntity, Long> {
     Optional<NodeEntity> findByNodename(String desc);
 
-    @Query(value= "delete FROM monitoring.node_resource_usage where create_ts < DATE_ADD(NOW(), INTERVAL -30 MINUTES)",
+    @Query(value= "delete FROM monitoring.node_resource_usage where create_ts < DATE_ADD(NOW(), INTERVAL -30 MINUTE)",
             nativeQuery = true)
     void deleteNodeTableNative();
 }
