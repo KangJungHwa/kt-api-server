@@ -26,21 +26,21 @@ public class TableDeleteTask {
     @Autowired
     GpuRepository gpuRepository;
 
-//    @Scheduled(cron="0 0/30 * * * *")
-//    public void deletePodTable()  throws Exception {
-//        podRepository.deletePodTableNative();
-//    }
-//    @Scheduled(cron="0 0/30 * * * *")
-//    public void deleteNodeTable()  throws Exception {
-//        nodeRepository.deleteNodeTableNative();
-//    }
-//    @Scheduled(cron="0 0/30 * * * *")
-//    public void deleteNetworkTable()  throws Exception {
-//        networkRepository.deleteNetworkTableNative();
-//    }
-//    @Scheduled(cron="0 0/30 * * * *")
-//    public void deleteGpuTable()  throws Exception {
-//        gpuRepository.deleteGpuTableNative();
-//        //gpuRepository.selectGpuTableNative();
-//    }
+    @Scheduled(cron="0 0/30 * * * *")
+    public void deletePodTable()  throws Exception {
+        podRepository.deletePodTableNative();
+    }
+    @Scheduled(cron="0 0/30 * * * *")
+    public void deleteNodeTable()  throws Exception {
+        nodeRepository.deleteNodeTableNative();
+    }
+    @Scheduled(cron="0 0/30 * * * *")
+    public void deleteNetworkTable()  throws Exception {
+        networkRepository.deleteNetworkTableNative();
+    }
+    @Scheduled(cron="0 0/30 * * * *")
+    public void deleteGpuTable()  throws Exception {
+        gpuRepository.deleteGpuTableNative();
+        //gpuRepository.selectGpuTableNative();
+    }
 }
