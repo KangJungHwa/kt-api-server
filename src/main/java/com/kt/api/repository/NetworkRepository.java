@@ -1,6 +1,7 @@
 package com.kt.api.repository;
 
 import com.kt.api.model.entity.NetworkEntity;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,8 @@ public interface NetworkRepository extends CrudRepository<NetworkEntity, Long> {
     Optional<NetworkEntity> findByNodename(String desc);
 
     @Transactional
-    @Query(value= "delete FROM monitoring.network_status where create_ts < DATE_ADD(NOW(), INTERVAL -30 MINUTE)",
+    @Modifying
+    @Query(value= "delete from monitoring.network_status where create_ts < date_add(now(), interval -30 minute)",
             nativeQuery = true)
     void deleteNetworkTableNative();
 }

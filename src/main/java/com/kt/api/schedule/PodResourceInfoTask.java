@@ -45,30 +45,57 @@ public class PodResourceInfoTask extends RestTemplateController {
     //1분마다 실행 kube-apiserver 호출
     //http://172.30.1.81:30003/k8s-apis/metrics.k8s.io/v1beta1/pods
 
-    @Scheduled(cron="0 * * * * *")
+    //@Scheduled(cron="0 * * * * *")
     public void run() throws JsonProcessingException {
         HttpEntity<String> entity = emptyGetRequestEntity(token);
         String url = k8sApisUrl+"/metrics.k8s.io/v1beta1/pods";
         ResponseEntity<String> responseEntity= restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Pods pods = mapper.readValue(responseEntity.getBody(), Pods.class);
-        List<PodEntity> podUsageList =
-                new ArrayList<>();
-        java.sql.Timestamp now = TimeUtil.getNow();
+        List<PodEntity> podUsageList = new ArrayList<>();
+        java.sql.Timestamp creaTimestamp = TimeUtil.getNow();
         for(int i=0; i<pods.getItems().size(); i++) {
             for(int j=0; j<pods.getItems().get(i).getContainers().size(); j++) {
-                String cpu=pods.getItems().get(i).getContainers().get(j).getUsage().getCpu().replaceAll("n", "");
-                String memory=pods.getItems().get(i).getContainers().get(j).getUsage().getMemory().replaceAll("Ki", "");
-                memory=memory.replaceAll("Mi", "");
-                memory=memory.replaceAll("Gi", "");
+                String cpu=pods.getItems().get(i).getContainers().get(j).getUsage().getCpu();
+                String memory=pods.getItems().get(i).getContainers().get(j).getUsage().getMemory();
+                String memoryUnit=null;
+                String cpuUnit=null;
+                if(cpu.indexOf("m")>0) {
+                    cpu = cpu.replaceAll("m", "");
+                    cpuUnit="mili";
+                }
+                if(cpu.indexOf("n")>0) {
+                    cpu = cpu.replaceAll("u", "");
+                    cpuUnit="micro";
+                }
+                if(cpu.indexOf("n")>0) {
+                    cpu = cpu.replaceAll("n", "");
+                    cpuUnit="nano";
+                }
+
+                if(memory.indexOf("Ki")>0) {
+                    memory = memory.replaceAll("Ki", "");
+                    memoryUnit = "Ki";
+                }
+                if(memory.indexOf("Mi")>0) {
+                    memory = memory.replaceAll("Mi", "");
+                    memoryUnit = "Mi";
+                }
+                if(memory.indexOf("Gi")>0) {
+                    memory = memory.replaceAll("Gi", "");
+                    memoryUnit = "Gi";
+                }
 
                 PodEntity podEntity=PodEntity.builder()
                        .podname(pods.getItems().get(i).getMetadata().getName())
                        .nameSpace(pods.getItems().get(i).getMetadata().getNameSpace())
                        .containerName(pods.getItems().get(i).getContainers().get(j).getContainerName())
                        .cpu(Long.valueOf(cpu))
+                       .cpuUnit(cpuUnit)
                        .memory(Long.valueOf(memory))
-                       .createDate(now).build();
+                       .memoryUnit(memoryUnit)
+                       .createDate(creaTimestamp).build();
                 podUsageList.add(podEntity);
+                log.info("time : " + creaTimestamp +" pod : "+pods.getItems().get(i).getMetadata().getName() +" con : " +pods.getItems().get(i).getContainers().get(j).getContainerName());
             }
         }
         podRepository.saveAll(podUsageList);

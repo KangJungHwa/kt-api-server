@@ -52,47 +52,59 @@ public class NodeResourceInfoTask extends RestTemplateController {
     //1분마다 실행 kube-apiserver 호출
     //http://172.30.1.81:30003/k8s-apis/metrics.k8s.io/v1beta1/nodes
 
-    @Scheduled(cron="0 * * * * *")
+    //@Scheduled(cron="0 * * * * *")
     public void run() throws JsonProcessingException {
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Node Resource Monitor start~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         HttpEntity<String> entity = emptyGetRequestEntity(token);
         String url = k8sApisUrl+"/metrics.k8s.io/v1beta1/nodes";
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Node Resource Monitor url~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+url);
-
         ResponseEntity<String> responseEntity= restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         Nodes nodes = mapper.readValue(responseEntity.getBody(), Nodes.class);
-
-        log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Node Resource Monitor Body~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"+responseEntity.getBody());
-
         List<NodeEntity> nodeUsageList =
                 new ArrayList<>();
         java.sql.Timestamp now = TimeUtil.getNow();
         for(int i=0; i<nodes.getItems().size(); i++) {
 
             String nodeRole=null;
-            if (nodes.getItems().get(i).getMetadata().getLabels().getNodeRole() != null) {
+            if (nodes.getItems().get(i).getMetadata().getName().indexOf("master") >0) {
                 nodeRole = "master";
-            } else {
+            } else{
                 nodeRole = "worker";
             }
-            String memoryUnit=null;
-            String cpu=nodes.getItems().get(i).getUsage().getCpu().replaceAll("n", "");
 
+            String cpu=nodes.getItems().get(i).getUsage().getCpu();
             String memory=nodes.getItems().get(i).getUsage().getMemory();
-            if(memory.indexOf("Ki")>0){
-                memory=memory.replaceAll("Ki", "");
+            String memoryUnit=null;
+            String cpuUnit=null;
+            if(cpu.indexOf("m")>0) {
+                cpu = cpu.replaceAll("m", "");
+                cpuUnit="mili";
+            }
+            if(cpu.indexOf("n")>0) {
+                cpu = cpu.replaceAll("n", "");
+                cpuUnit="nano";
+            }
+            if(cpu.indexOf("n")>0) {
+                cpu = cpu.replaceAll("u", "");
+                cpuUnit="micro";
+            }
+            if(memory.indexOf("Ki")>0) {
+                memory = memory.replaceAll("Ki", "");
+                memoryUnit = "Ki";
             }
             if(memory.indexOf("Mi")>0) {
-                memory=memory.replaceAll("Mi", "");
+                memory = memory.replaceAll("Mi", "");
+                memoryUnit = "Mi";
             }
             if(memory.indexOf("Gi")>0) {
-                memory=memory.replaceAll("Gi", "");
+                memory = memory.replaceAll("Gi", "");
+                memoryUnit = "Gi";
             }
             NodeEntity nodeEntity=NodeEntity.builder()
                     .nodename(nodes.getItems().get(i).getMetadata().getName())
                     .nodeRole(nodeRole)
                     .cpu(Long.valueOf(cpu))
+                    .cpuUnit(cpuUnit)
                     .memory(Long.valueOf(memory))
+                    .memoryUnit(memoryUnit)
                     .createDate(now).build();
             nodeUsageList.add(nodeEntity);
         }

@@ -32,14 +32,18 @@ public class PodEntity  implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp createDate;
 
-
-
     @Column(name = "name_space", columnDefinition = "VARCHAR(100)", nullable = true)
     String nameSpace;
 
     @Column(name = "cpu")
     Long cpu;
 
+    @Column(name = "cpu_unit", columnDefinition = "VARCHAR(10)", nullable = true)
+    String cpuUnit;
+
     @Column(name = "memory")
     Long memory;
+
+    @Column(name = "memory_unit", columnDefinition = "VARCHAR(10)", nullable = true)
+    String memoryUnit;
 }

@@ -43,6 +43,12 @@ public class NodeEntity implements Serializable {
     @Column(name = "cpu")
     Long cpu;
 
+    @Column(name = "cpu_unit", columnDefinition = "VARCHAR(10)", nullable = true)
+    String cpuUnit;
+
     @Column(name = "memory")
     Long memory;
+
+    @Column(name = "memory_unit", columnDefinition = "VARCHAR(10)", nullable = true)
+    String memoryUnit;
 }
