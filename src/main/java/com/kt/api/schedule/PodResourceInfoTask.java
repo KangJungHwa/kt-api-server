@@ -63,7 +63,7 @@ public class PodResourceInfoTask extends RestTemplateController {
                     cpu = cpu.replaceAll("m", "");
                     cpuUnit="mili";
                 }
-                if(cpu.indexOf("n")>0) {
+                if(cpu.indexOf("u")>0) {
                     cpu = cpu.replaceAll("u", "");
                     cpuUnit="micro";
                 }
