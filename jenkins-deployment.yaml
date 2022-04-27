@@ -24,6 +24,8 @@ spec:
           env:
           - name: TZ
             value: Asia/Seoul
+          - name: JAVA_TOOL_OPTIONS
+            value: "-Xms4096m -Xmx9216m"
           ports:
             - containerPort: 8080
           volumeMounts:
