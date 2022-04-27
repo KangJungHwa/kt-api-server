@@ -67,7 +67,7 @@ public class NodeNetworkPacketInfoTask  {
      * @param nodename 노드명
      * @param responseStr 명령어 실행결과
      */
-    public void saveResult(String nodename,String responseStr,String networkcard,Timestamp createTimestamp){
+    public void saveResult(String nodename, String responseStr,String networkcard,Timestamp createTimestamp){
         String[] result = responseStr.split("\n");
         boolean isCheckStart=false;
         Long rxPackets=0L;
@@ -102,19 +102,20 @@ public class NodeNetworkPacketInfoTask  {
                 txErrors=Long.valueOf(result[i].substring(result[i].indexOf("errors")+7,result[i].indexOf("dropped")-2));
                 break;
             }
-            NetworkEntity networkEntity = NetworkEntity.builder()
-                    .rxPackets(rxPackets)
-                    .rxBytes(rxBytes)
-                    .rxHumanBytes(rxHumanBytes)
-                    .rxErrors(rxErrors)
-                    .txPackets(txPackets)
-                    .txBytes(txBytes)
-                    .txHumanBytes(txHumanBytes)
-                    .txErrors(txErrors)
-                    .nodename(nodename)
-                    .createDate(createTimestamp).build();
-            networkList.add(networkEntity);
+
         }
+        NetworkEntity networkEntity = NetworkEntity.builder()
+                .rxPackets(rxPackets)
+                .rxBytes(rxBytes)
+                .rxHumanBytes(rxHumanBytes)
+                .rxErrors(rxErrors)
+                .txPackets(txPackets)
+                .txBytes(txBytes)
+                .txHumanBytes(txHumanBytes)
+                .txErrors(txErrors)
+                .nodename(nodename)
+                .createDate(createTimestamp).build();
+        networkList.add(networkEntity);
         networkRepository.saveAll(networkList);
     }
 }
