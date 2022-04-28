@@ -32,22 +32,11 @@ public class FileService {
      */
     public void save(MultipartFile file,String path) {
         try {
-            String linkPath=this.uploadPath + path;
-
-            //파일 체크를 할때 symboliclink가 있는지 체크를  해야 할 수도 있음.
-            // java.nio.file.Files.isSymbolicLink(Path path)
-            // 아래와 같이 createDir을 할당된 pv 밖에 지정하면 pod의 filesystem에 생성을 해버린다.
-            //jsch로 접근해서 생성하는 방법으로 변경할것
-            if (!Files.isSymbolicLink(Paths.get(linkPath))){
-                String targetPath="/nfs_mount/upload/"+path;
+            String targetPath=this.uploadPath + path;
+            if (!Files.exists(Paths.get(targetPath))) {
                 FileUtils.createDir(targetPath);
-                FileUtils.createSymbolicLink(linkPath,targetPath);
             }
-            //디렉토리를 생성할 경우.
-            //if (!Files.exists(fullpath)) {
-            //    createDir();
-            //}
-            Files.copy(file.getInputStream(), Paths.get(linkPath).resolve(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(), Paths.get(targetPath).resolve(file.getOriginalFilename()));
         } catch (Exception e) {
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
