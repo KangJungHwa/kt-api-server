@@ -4,9 +4,7 @@ package com.kt.api.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcraft.jsch.JSchException;
 import com.kt.api.model.KubeletLogReqest;
-import com.kt.api.repository.NetworkRepository;
 import com.kt.api.util.EncryptionUtils;
-import com.kt.api.util.MapUtils;
 import com.kt.api.util.SSHUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,12 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @RestController

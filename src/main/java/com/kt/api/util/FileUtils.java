@@ -2,13 +2,12 @@ package com.kt.api.util;
 
 import org.apache.commons.lang.SystemUtils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
+import java.util.Scanner;
 
 /**
  * File Utility.
@@ -171,7 +170,24 @@ public class FileUtils {
             throw new RuntimeException("Could not create symbolic link!");
         }
     }
+    /**
+     * 심볼릭 링크를 생성할 경우
+     */
+    public static StringBuilder readFile(String filePath) {
+        StringBuilder sb=new StringBuilder();
+        try {
+            Scanner scanner = new Scanner(new File(filePath));
 
+            while (scanner.hasNextLine()) {
+                String str = scanner.nextLine();
+                sb.append(str);
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Could not create symbolic link!");
+        }
+        return sb;
+    }
 
 
 }

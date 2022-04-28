@@ -52,8 +52,7 @@ public class FilesController {
                                                             @RequestParam("isOverWrite") boolean isOverWrite
                                                             ) {
         try {
-            System.out.println("path :~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ "+path);
-            System.out.println("isOverWrite :~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ "+isOverWrite);
+
             fileService.save(file,path);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(new UploadResponseMessage("Uploaded the file successfully: " + file.getOriginalFilename()));

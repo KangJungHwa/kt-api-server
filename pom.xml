@@ -77,11 +77,6 @@
             <artifactId>jaxp-api</artifactId>
             <version>1.4.5</version>
         </dependency>
-        <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>0.1.55</version>
-        </dependency>
 
         <!-- ============================= -->
         <!--  Spring Framework Dependency  -->
@@ -142,13 +137,6 @@
         <!-- ================= -->
         <!--  JDBC Dependency  -->
         <!-- ================= -->
-
-<!--        <dependency>-->
-<!--            <groupId>org.postgresql</groupId>-->
-<!--            <artifactId>postgresql</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -263,45 +251,6 @@
     <!-- ======================= -->
     <!--  Dependency Management  -->
     <!-- ======================= -->
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <snapshots>-->
-<!--                <enabled>true</enabled>-->
-<!--            </snapshots>-->
-<!--            <id>kt-snapshot</id>-->
-<!--            <name>kt-snapshot</name>-->
-<!--            <url>http://nexus.k8s.io:30083/repository/kt-snapshot/</url>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <snapshots>-->
-<!--                <enabled>true</enabled>-->
-<!--            </snapshots>-->
-<!--            <id>kt-release</id>-->
-<!--            <name>kt-release</name>-->
-<!--            <url>http://nexus.k8s.io:30083/repository/kt-release/</url>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <snapshots>-->
-<!--                <enabled>false</enabled>-->
-<!--            </snapshots>-->
-<!--            <id>nexus</id>-->
-<!--            <name>nexus</name>-->
-<!--            <url>http://nexus.k8s.io:30083/repository/nexus/</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
-<!--    <pluginRepositories>-->
-<!--        <pluginRepository>-->
-<!--            <releases>-->
-<!--                <updatePolicy>never</updatePolicy>-->
-<!--            </releases>-->
-<!--            <snapshots>-->
-<!--                <enabled>false</enabled>-->
-<!--            </snapshots>-->
-<!--            <id>nexus</id>-->
-<!--            <name>nexus</name>-->
-<!--            <url>hhttp://nexus.k8s.io:30083/repository/nexus/</url>-->
-<!--        </pluginRepository>-->
-<!--    </pluginRepositories>-->
     <repositories>
         <repository>
             <snapshots>
