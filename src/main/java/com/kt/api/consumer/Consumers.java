@@ -1,6 +1,7 @@
 package com.kt.api.consumer;
 
-import com.kt.api.util.RabbitmqConnectionManager;
+
+import com.kt.api.config.RabbitMqConfiguration;
 import com.rabbitmq.client.Channel;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 @Component
 public class Consumers {
     public  void subscribeMessage() throws IOException, TimeoutException {
-        Channel channel = RabbitmqConnectionManager.getConnection().createChannel();
+        Channel channel = RabbitMqConfiguration.getConnection().createChannel();
         channel.basicConsume("intentService", true, ((consumerTag, message) -> {
             System.out.println("\n\n=========== intentService Queue ==========");
             System.out.println(consumerTag);
