@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 
 @Slf4j
 @RestController
-@RequestMapping("rabbitmq")
+@RequestMapping("/rabbitmq")
 public class RabbitmqController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class RabbitmqController {
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
         public ResponseEntity<MQResponse> getKubeletLog(@RequestBody @Valid MQRequest request) throws InterruptedException{
-
+        log.info("{}", String.format("'%s' message를 전송합니다.", request.getRequestMessage()));
         MQResponse message = new MQResponse();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
@@ -45,7 +45,7 @@ public class RabbitmqController {
         // sendRoutingKey는 파라메터로 전달 받는다.
         // 여기서 repository에서 데이터를 조회해서 requstParameter를 json에 세팅하고 메세지 큐에 메세지 전달
         // message는 json 형태로 변환하는데 request 정보와 repository 정보를 조합하여 ObjectMapper.writeAsString으로 변환
-        amqpTemplate.convertAndSend(topicExchange, sendRoutingKey, "send second message success~~~");
+        amqpTemplate.convertAndSend(topicExchange, request.getRouteKey(), "send second message success~~~");
 
         System.out.println("Message sent to the RabbitMQ Topic Exchange Successfully") ;
 

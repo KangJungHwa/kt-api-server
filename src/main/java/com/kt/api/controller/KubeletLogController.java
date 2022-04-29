@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/log/kubelet")
+@RequestMapping("/log")
 @Api("kubelet 로그 검색 서비스")
 @ConfigurationProperties(prefix = "k8s")
 public class KubeletLogController {
@@ -61,7 +61,7 @@ public class KubeletLogController {
      * @throws JSchException
      */
     @ApiOperation("kubelet 로그 검색")
-    @GetMapping("/")
+    @GetMapping("/kubelet")
     public String getKubeletLog(@RequestBody @Valid KubeletLogReqest request) throws InterruptedException, JSchException {
         log.info("{}", String.format("'%s'node의 kubelet 로그를 검색합니다.", request.getNodeName()));
         long startMillis = System.currentTimeMillis();

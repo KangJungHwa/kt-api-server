@@ -23,13 +23,14 @@ public class RabbitRunner implements CommandLineRunner{
 
     @Override
     public void run(String... args) {
+        //아래 방식은 direct Exchange 방식 이다.
         amqpTemplate.convertAndSend(topicExchange, sendRoutingKey, "send second message success~~~");
 
         System.out.println("Message sent to the RabbitMQ Topic Exchange Successfully") ;
 
-        amqpTemplate.convertAndSend(topicExchange, receiveRoutingKey, "receive second message success~~~");
-
-        System.out.println("Message receive to the RabbitMQ Topic Exchange Successfully") ;
+//        amqpTemplate.convertAndSend(topicExchange, receiveRoutingKey, "receive second message success~~~");
+//
+//        System.out.println("Message receive to the RabbitMQ Topic Exchange Successfully") ;
 
     }
 
