@@ -29,6 +29,15 @@ public class RabbitmqController {
     @Value("${spring.rabbitmq.host}")
     private String rabbitmqHost;
 
+    @Value("${spring.rabbitmq.port}")
+    private int rabbitmqPort;
+
+    @Value("${spring.rabbitmq.username}")
+    private String username;
+
+    @Value("${spring.rabbitmq.password}")
+    private String password;
+
     private static final String EXCHANGE_NAME = "topic_nlu";
 
 
@@ -47,6 +56,12 @@ public class RabbitmqController {
         try {
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost(rabbitmqHost);
+            factory.setPort(rabbitmqPort);
+            factory.setUsername(username);
+            factory.setPassword(password);
+
+
+
             Connection connection = factory.newConnection();
             Channel channel = connection.createChannel();
             //channel.exchangeDeclare(EXCHANGE_NAME, "topic",true);
