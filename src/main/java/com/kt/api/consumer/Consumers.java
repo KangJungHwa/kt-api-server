@@ -3,6 +3,7 @@ package com.kt.api.consumer;
 
 import com.kt.api.config.RabbitMqConfiguration;
 import com.rabbitmq.client.Channel;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -10,39 +11,9 @@ import java.util.concurrent.TimeoutException;
 
 @Component
 public class Consumers {
-    public  void subscribeMessage() throws IOException, TimeoutException {
-        Channel channel = RabbitMqConfiguration.getConnection().createChannel();
-        channel.basicConsume("intentService", true, ((consumerTag, message) -> {
-            System.out.println("\n\n=========== intentService Queue ==========");
-            System.out.println(consumerTag);
-            System.out.println("intentService: " + new String(message.getBody()));
-            System.out.println(message.getEnvelope());
-        }), consumerTag -> {
-            System.out.println(consumerTag);
-        });
-        channel.basicConsume("intentTrain", true, ((consumerTag, message) -> {
-            System.out.println("\n\n ============ intentTrain Queue ==========");
-            System.out.println(consumerTag);
-            System.out.println("intentTrain: " + new String(message.getBody()));
-            System.out.println(message.getEnvelope());
-        }), consumerTag -> {
-            System.out.println(consumerTag);
-        });
-        channel.basicConsume("nerService", true, ((consumerTag, message) -> {
-            System.out.println("\n\n ============ nerService Queue ==========");
-            System.out.println(consumerTag);
-            System.out.println("nerService: " + new String(message.getBody()));
-            System.out.println(message.getEnvelope());
-        }), consumerTag -> {
-            System.out.println(consumerTag);
-        });
-        channel.basicConsume("nerTrain", true, ((consumerTag, message) -> {
-            System.out.println("\n\n ============ nerTrain Queue ==========");
-            System.out.println(consumerTag);
-            System.out.println("nerTrain: " + new String(message.getBody()));
-            System.out.println(message.getEnvelope());
-        }), consumerTag -> {
-            System.out.println(consumerTag);
-        });
+    final String queueName="intentTrain";
+    @RabbitListener(queues = queueName)
+    public void recievedMessage(String msg) {
+        System.out.println("Recieved Message From RabbitMQ: " + msg);
     }
 }
