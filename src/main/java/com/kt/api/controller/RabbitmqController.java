@@ -39,8 +39,8 @@ public class RabbitmqController {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
-
-    private final static String QUEUE_NAME = "hello";
+    @Value("${spring.rabbitmq.queue}")
+    private String QUEUE_NAME;
     //private static final String EXCHANGE_NAME = "topic_nlu";
 
 
