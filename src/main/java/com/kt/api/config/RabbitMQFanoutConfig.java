@@ -4,7 +4,7 @@ import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 
 /**
- * 사용방법 팽아웃은 라우트키가 없다.
+ * 사용방법 팬아웃은 라우트키가 없다.
  * amqpTemplate.convertAndSend(exchange, "", msg);
 */
 //@Configuration
