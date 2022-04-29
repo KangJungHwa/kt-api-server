@@ -34,7 +34,7 @@ public class RabbitmqController {
 
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
-        public ResponseEntity<MQResponse> getKubeletLog(@RequestBody @Valid MQRequest request) throws InterruptedException, IOException, TimeoutException {
+        public ResponseEntity<MQResponse> sendMessage(@RequestBody @Valid MQRequest request) throws InterruptedException, IOException, TimeoutException {
         log.info("{}", String.format("'%s' message를 전송합니다.", request.getRequestMessage()));
 
         String routingKey=request.getRouteKey();
@@ -48,7 +48,8 @@ public class RabbitmqController {
             Channel channel = RabbitMQConfig.getChannel();
         try {
 
-            channel.exchangeDeclare(EXCHANGE_NAME, "topic");
+            channel.exchangeDeclare(EXCHANGE_NAME, "topic",true);
+            channel.queueBind("send.test",EXCHANGE_NAME,routingKey);
 
             channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
             System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
@@ -61,8 +62,6 @@ public class RabbitmqController {
         System.out.println("Message sent to the RabbitMQ Topic Exchange Successfully") ;
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            channel.close();
         }
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }
