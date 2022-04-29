@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
 @Slf4j
@@ -27,10 +28,10 @@ public class RabbitmqController {
 
 
     @Value("${spring.rabbitmq.host}")
-    private String rabbitmqHost;
+    private String host;
 
     @Value("${spring.rabbitmq.port}")
-    private int rabbitmqPort;
+    private int port;
 
     @Value("${spring.rabbitmq.username}")
     private String username;
@@ -38,48 +39,69 @@ public class RabbitmqController {
     @Value("${spring.rabbitmq.password}")
     private String password;
 
-    private static final String EXCHANGE_NAME = "topic_nlu";
+
+    private final static String QUEUE_NAME = "hello";
+    //private static final String EXCHANGE_NAME = "topic_nlu";
 
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
-        public ResponseEntity<MQResponse> sendMessage(@RequestBody @Valid MQRequest request) throws InterruptedException, IOException, TimeoutException {
+        public ResponseEntity<MQResponse> sendMessage(@RequestBody @Valid MQRequest request) throws IOException, TimeoutException {
         log.info("{}", String.format("'%s' message를 전송합니다.", request.getRequestMessage()));
-
+        log.info("host : "+host);
+        log.info("port : "+port);
+        log.info("username : "+username);
+        log.info("password : "+password);
         String routingKey=request.getRouteKey();
         String message=request.getRequestMessage();
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(host);
+        factory.setPort(port);
+        factory.setUsername(username);
+        factory.setPassword(password);
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+             channel.basicPublish("", QUEUE_NAME, null, message.getBytes(StandardCharsets.UTF_8));
+            System.out.println(" [x] Sent '" + message + "'");
+        }
+
 
         MQResponse response = new MQResponse();
         HttpHeaders headers= new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-
-        try {
-            ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(rabbitmqHost);
-            factory.setPort(rabbitmqPort);
-            factory.setUsername(username);
-            factory.setPassword(password);
-
-
-
-            Connection connection = factory.newConnection();
-            Channel channel = connection.createChannel();
-            //channel.exchangeDeclare(EXCHANGE_NAME, "topic",true);
-            //TODO 라우트 키에 해당하는 메세지 큐를 바인딩 해준다.
-            channel.queueBind("send.test",EXCHANGE_NAME,routingKey);
-
-            channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
-            System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
-
-
-
         response.setStatus(StatusEnum.OK);
         response.setMessage("Message Send Success!");
         response.setData("Message Send Success!");
-        System.out.println("Message sent to the RabbitMQ Topic Exchange Successfully") ;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
+//
+//
+//        try {
+//            ConnectionFactory factory = new ConnectionFactory();
+//            factory.setHost(host);
+//            factory.setPort(port);
+//            factory.setUsername(username);
+//            factory.setPassword(password);
+//
+//
+//
+//            Connection connection = factory.newConnection();
+//            Channel channel = connection.createChannel();
+//            //channel.exchangeDeclare(EXCHANGE_NAME, "topic",true);
+//            //TODO 라우트 키에 해당하는 메세지 큐를 바인딩 해준다.
+//            channel.queueBind("send.test",EXCHANGE_NAME,routingKey);
+//
+//            channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
+//            System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
+//
+//
+//
+//        response.setStatus(StatusEnum.OK);
+//        response.setMessage("Message Send Success!");
+//        response.setData("Message Send Success!");
+//        System.out.println("Message sent to the RabbitMQ Topic Exchange Successfully") ;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
     }
 }
