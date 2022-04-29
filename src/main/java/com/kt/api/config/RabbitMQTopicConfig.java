@@ -24,13 +24,13 @@ import java.util.List;
 public class RabbitMQTopicConfig {
 
 
-    @Autowired
-    MqmappingRepository mqmappingRepository;
-
-    @PostConstruct
-    void init(){
-        List<MessageQueueEntity> sendList= mqmappingRepository.findByDirection("send");
-    }
+//    @Autowired
+//    MqmappingRepository mqmappingRepository;
+//
+//    @PostConstruct
+//    void init(){
+//        List<MessageQueueEntity> sendList= mqmappingRepository.findByDirection("send");
+//    }
 
     @Bean
     Queue sendQueue() {
