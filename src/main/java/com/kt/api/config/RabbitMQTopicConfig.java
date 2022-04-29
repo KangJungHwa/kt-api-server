@@ -32,6 +32,10 @@ public class RabbitMQTopicConfig {
 //        List<MessageQueueEntity> sendList= mqmappingRepository.findByDirection("send");
 //    }
 
+    /**
+     * durable 옵션은 RabbitMQ 재시작시 해당 큐를 살려둘지 여부
+     * @return
+     */
     @Bean
     Queue sendQueue() {
         return new Queue("queue.send", false);

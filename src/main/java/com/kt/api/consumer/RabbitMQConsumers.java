@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RabbitMQConsumers {
-    @RabbitListener(queues="", containerFactory="jsaFactory")
+    @RabbitListener(queues="")
     public void recievedMessage(Records records) {
         System.out.println("Recieved Message: " + records);
     }
