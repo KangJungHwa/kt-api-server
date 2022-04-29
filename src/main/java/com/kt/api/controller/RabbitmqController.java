@@ -1,7 +1,6 @@
 package com.kt.api.controller;
 
 
-import com.kt.api.config.RabbitMQConfig;
 import com.kt.api.model.MQRequest;
 import com.kt.api.model.MQResponse;
 import com.kt.api.model.StatusEnum;
@@ -45,10 +44,13 @@ public class RabbitmqController {
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
 
-            Channel channel = RabbitMQConfig.getChannel();
         try {
-
-            channel.exchangeDeclare(EXCHANGE_NAME, "topic",true);
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost(rabbitmqHost);
+            Connection connection = factory.newConnection();
+            Channel channel = connection.createChannel();
+            //channel.exchangeDeclare(EXCHANGE_NAME, "topic",true);
+            //TODO 라우트 키에 해당하는 메세지 큐를 바인딩 해준다.
             channel.queueBind("send.test",EXCHANGE_NAME,routingKey);
 
             channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes("UTF-8"));
