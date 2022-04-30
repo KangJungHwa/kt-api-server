@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: local
   application:
     name: kt-api-server
   rabbitmq:
@@ -8,7 +6,12 @@ spring:
     port: 5672
     username: admin
     password: Ktaicc@1234
-
+    queue: queue.send
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
 
   #################
   ## JPA
@@ -34,7 +37,7 @@ spring:
   ################################################################
   datasource:
     url: jdbc:log4jdbc:mysql://10.233.4.179:3306/nlu?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&rewriteBatchedStatements=true
-    #url: jdbc:log4jdbc:mysql://aiplatformdev2.synology.me:30084/monitoring?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&rewriteBatchedStatements=true
+    #url: jdbc:log4jdbc:mysql://aiplatformdev2.synology.me:30084/nlu?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&rewriteBatchedStatements=true
     #url: jdbc:log4jdbc:mysql://172.30.1.86:32524/konga?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&rewriteBatchedStatements=true
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     username: root
@@ -94,9 +97,9 @@ app:
 #################
 
 logging:
-  #config: src/main/resources/logback-local.xml
-  #config: ./logback-local.xml
-  config: /opt/logback-local.xml
+  #config: src/main/resources/logback.xml
+  #config: ./logback.xml
+  config: /opt/logback-prod.xml
 #################
 ## Management
 #################

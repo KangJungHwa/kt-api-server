@@ -1,6 +1,14 @@
 spring:
+  profiles:
+    active: local
   application:
     name: kt-api-server
+#    rabbitmq:
+#      host: 10.233.28.69
+#      port: 5672
+#      username: admin
+#      password: Ktaicc@1234
+#      queue: queue.send
   rabbitmq:
     host: localhost
     port: 5672
@@ -93,7 +101,7 @@ app:
 logging:
   #config: src/main/resources/logback.xml
   #config: ./logback.xml
-  config: /opt/logback-local.xml
+  config: /opt/logback.xml
 #################
 ## Management
 #################

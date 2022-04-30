@@ -117,12 +117,18 @@ public class RabbitMqConfiguration {
         for (MessageQueueEntity queue : sendQueueList) {
             getChannel().queueDeclare(queue.getQueueName(), true, false, false, null);
         }
+        for (MessageQueueEntity queue : receiveQueueList) {
+            getChannel().queueDeclare(queue.getQueueName(), true, false, false, null);
+        }
     }
 
     //rabbitMq에서 binding은 bean으로 등록되어야 함.
     @Bean
     public void declareBindings() throws IOException, TimeoutException {
         for (MessageQueueEntity queue : sendQueueList) {
+            getChannel().queueBind(queue.getQueueName(), "nlu-topic-exchange", queue.getRouteKey());
+        }
+        for (MessageQueueEntity queue : receiveQueueList) {
             getChannel().queueBind(queue.getQueueName(), "nlu-topic-exchange", queue.getRouteKey());
         }
     }
