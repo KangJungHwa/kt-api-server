@@ -77,6 +77,23 @@ public class RabbitMqConfiguration {
     private void getQueueList() throws IOException, TimeoutException {
         queueList= mqmappingRepository.findByDirection("send");
     }
+
+    @Bean
+    public  void declareExchange() throws IOException, TimeoutException {
+        getChannel().exchangeDeclare("nlu-topic-exchange", BuiltinExchangeType.TOPIC, true);
+    }
+    @Bean
+    public  void declareQueues() throws IOException, TimeoutException {
+        for (MessageQueueEntity queue :queueList) {
+            getChannel().queueDeclare(queue.getQueueName(), true, false, false, null);
+        }
+    }
+    @Bean
+    public  void declareBindings() throws IOException, TimeoutException {
+        for (MessageQueueEntity queue :queueList) {
+            getChannel().queueBind(queue.getQueueName(), "nlu-topic-exchange", queue.getRouteKey());
+        }
+    }
 //    RabbitMqConfiguration() throws IOException, TimeoutException {
 //        init();
 //    }
@@ -85,23 +102,6 @@ public class RabbitMqConfiguration {
 //        declareExchange();
 //        declareQueues(queueList);
 //    }
-    @Bean
-    public  void declareExchange() throws IOException, TimeoutException {
-        getChannel().exchangeDeclare("nlu-topic-exchange", BuiltinExchangeType.TOPIC, true);
-    }
-    @Bean
-    public  void declareQueues(List<MessageQueueEntity> queueList) throws IOException, TimeoutException {
-        for (MessageQueueEntity queue :queueList) {
-            getChannel().queueDeclare(queue.getQueueName(), true, false, false, null);
-        }
-    }
-    @Bean
-    public  void declareBindings(List<MessageQueueEntity> queueList) throws IOException, TimeoutException {
-        for (MessageQueueEntity queue :queueList) {
-            getChannel().queueBind(queue.getQueueName(), "nlu-topic-exchange", queue.getRouteKey());
-        }
-    }
-
 //    @Bean
 //    public  void declareExchange() throws IOException, TimeoutException {
 //        Channel channel = getConnection().createChannel();
