@@ -1,17 +1,21 @@
 package com.kt.api.config;
 
 
+import com.kt.api.model.entity.MessageQueueEntity;
+import com.kt.api.repository.MqmappingRepository;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 @Configuration
@@ -40,6 +44,9 @@ public class RabbitMqConfiguration {
 
     private static Connection connection = null;
     private static Channel channel= null;
+    @Autowired
+    MqmappingRepository mqmappingRepository;
+
     @PostConstruct
     public static Connection getConnection() {
         if (connection == null) {
@@ -60,11 +67,18 @@ public class RabbitMqConfiguration {
     }
     @Bean
     public static Channel getChannel() throws IOException {
-        if (connection == null) {
-             channel =getConnection().createChannel();
-        }
+
+             channel = getConnection().createChannel();
+
         return channel;
     }
+//    private RabbitMqConfiguration(){
+//        init();
+//    }
+//    private void init(){
+//        List<MessageQueueEntity> queueList= mqmappingRepository.findByDirection("send");
+//
+//    }
     @Bean
     public  void declareExchange() throws IOException, TimeoutException {
         Channel channel = getConnection().createChannel();
