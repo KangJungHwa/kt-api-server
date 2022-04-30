@@ -72,40 +72,56 @@ public class RabbitMqConfiguration {
         }
         return channel;
     }
-//    private RabbitMqConfiguration(){
-//        init();
-//    }
-//    private void init(){
-//        List<MessageQueueEntity> queueList= mqmappingRepository.findByDirection("send");
-//
-//    }
-    @Bean
-    public  void declareExchange() throws IOException, TimeoutException {
-        Channel channel = getConnection().createChannel();
-        //Create Topic Exchange
-        channel.exchangeDeclare("nlu-topic-exchange", BuiltinExchangeType.TOPIC, true);
-        channel.close();
+
+    private RabbitMqConfiguration() throws IOException, TimeoutException {
+        init();
     }
-    @Bean
-    public  void declareQueues() throws IOException, TimeoutException {
-        //Create a channel - do not share the Channel instance
-        Channel channel = getConnection().createChannel();
-        //Create the Queues
-        channel.queueDeclare("intentTrain", true, false, false, null);
-        channel.queueDeclare("intentService", true, false, false, null);
-        channel.queueDeclare("nerTrain", true, false, false, null);
-        channel.queueDeclare("nerService", true, false, false, null);
-        channel.close();
+    private void init() throws IOException, TimeoutException {
+        List<MessageQueueEntity> queueList= mqmappingRepository.findByDirection("send");
+        declareExchange();
+        declareQueues(queueList);
+    }
+    public  void declareExchange() throws IOException, TimeoutException {
+        getChannel().exchangeDeclare("nlu-topic-exchange", BuiltinExchangeType.TOPIC, true);
+    }
+    public  void declareQueues(List<MessageQueueEntity> queueList) throws IOException, TimeoutException {
+        for (MessageQueueEntity queue :queueList) {
+            getChannel().queueDeclare(queue.getQueueName(), true, false, false, null);
+        }
+    }
+    public  void declareBindings(List<MessageQueueEntity> queueList) throws IOException, TimeoutException {
+        for (MessageQueueEntity queue :queueList) {
+            getChannel().queueBind(queue.getQueueName(), "nlu-topic-exchange", queue.getRouteKey());
+        }
     }
 
-    @Bean
-    public  void declareBindings() throws IOException, TimeoutException {
-        Channel channel = getConnection().createChannel();
-        //Create bindings - (queue, exchange, routingKey) - routingKey != null
-        channel.queueBind("intentTrain", "nlu-topic-exchange", "intent.train.*");
-        channel.queueBind("intentService", "nlu-topic-exchange", "intent.service.*");
-        channel.queueBind("nerTrain", "nlu-topic-exchange", "ner.train.*");
-        channel.queueBind("nerService", "nlu-topic-exchange", "ner.service.*");
-        channel.close();
-    }
+//    @Bean
+//    public  void declareExchange() throws IOException, TimeoutException {
+//        Channel channel = getConnection().createChannel();
+//        //Create Topic Exchange
+//        channel.exchangeDeclare("nlu-topic-exchange", BuiltinExchangeType.TOPIC, true);
+//        channel.close();
+//    }
+//    //@Bean
+//    public  void declareQueues() throws IOException, TimeoutException {
+//        //Create a channel - do not share the Channel instance
+//        Channel channel = getConnection().createChannel();
+//        //Create the Queues
+//        channel.queueDeclare("intentTrain", true, false, false, null);
+//        channel.queueDeclare("intentService", true, false, false, null);
+//        channel.queueDeclare("nerTrain", true, false, false, null);
+//        channel.queueDeclare("nerService", true, false, false, null);
+//        channel.close();
+//    }
+
+//    @Bean
+//    public  void declareBindings() throws IOException, TimeoutException {
+//        Channel channel = getConnection().createChannel();
+//        //Create bindings - (queue, exchange, routingKey) - routingKey != null
+//        channel.queueBind("intentTrain", "nlu-topic-exchange", "intent.train.*");
+//        channel.queueBind("intentService", "nlu-topic-exchange", "intent.service.*");
+//        channel.queueBind("nerTrain", "nlu-topic-exchange", "ner.train.*");
+//        channel.queueBind("nerService", "nlu-topic-exchange", "ner.service.*");
+//        channel.close();
+//    }
 }
