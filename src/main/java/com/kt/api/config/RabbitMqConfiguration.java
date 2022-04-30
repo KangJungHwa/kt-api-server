@@ -47,6 +47,7 @@ public class RabbitMqConfiguration {
     @Autowired
     MqmappingRepository mqmappingRepository;
 
+    List<MessageQueueEntity> queueList;
     @PostConstruct
     public static Connection getConnection() {
         if (connection == null) {
@@ -65,30 +66,36 @@ public class RabbitMqConfiguration {
         }
         return connection;
     }
-    @Bean
+    @PostConstruct
     public static Channel getChannel() throws IOException {
         if (channel == null) {
             channel = getConnection().createChannel();
         }
         return channel;
     }
-
-    RabbitMqConfiguration() throws IOException, TimeoutException {
-        init();
+    @PostConstruct
+    private void getQueueList() throws IOException, TimeoutException {
+        queueList= mqmappingRepository.findByDirection("send");
     }
-    private void init() throws IOException, TimeoutException {
-        List<MessageQueueEntity> queueList= mqmappingRepository.findByDirection("send");
-        declareExchange();
-        declareQueues(queueList);
-    }
+//    RabbitMqConfiguration() throws IOException, TimeoutException {
+//        init();
+//    }
+//    private void init() throws IOException, TimeoutException {
+//        List<MessageQueueEntity> queueList= mqmappingRepository.findByDirection("send");
+//        declareExchange();
+//        declareQueues(queueList);
+//    }
+    @Bean
     public  void declareExchange() throws IOException, TimeoutException {
         getChannel().exchangeDeclare("nlu-topic-exchange", BuiltinExchangeType.TOPIC, true);
     }
+    @Bean
     public  void declareQueues(List<MessageQueueEntity> queueList) throws IOException, TimeoutException {
         for (MessageQueueEntity queue :queueList) {
             getChannel().queueDeclare(queue.getQueueName(), true, false, false, null);
         }
     }
+    @Bean
     public  void declareBindings(List<MessageQueueEntity> queueList) throws IOException, TimeoutException {
         for (MessageQueueEntity queue :queueList) {
             getChannel().queueBind(queue.getQueueName(), "nlu-topic-exchange", queue.getRouteKey());
