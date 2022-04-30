@@ -67,9 +67,9 @@ public class RabbitMqConfiguration {
     }
     @Bean
     public static Channel getChannel() throws IOException {
-
-             channel = getConnection().createChannel();
-
+        if (channel == null) {
+            channel = getConnection().createChannel();
+        }
         return channel;
     }
 //    private RabbitMqConfiguration(){
