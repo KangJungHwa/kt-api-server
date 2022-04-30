@@ -14,13 +14,13 @@ public class MessageQueueEntity{
     @Id
     private Integer id;
 
-    @Column(name = "route_key", columnDefinition = "VARCHAR(20)", nullable = true)
+    @Column(name = "route_key", columnDefinition = "VARCHAR(40)", nullable = true)
     private String routeKey;
 
     @Column(name = "direction", columnDefinition = "VARCHAR(20)", nullable = true)
     private String direction;
 
-    @Column(name = "queue_name", columnDefinition = "VARCHAR(20)", nullable = true)
+    @Column(name = "queue_name", columnDefinition = "VARCHAR(40)", nullable = true)
     private String queueName;
 
 }

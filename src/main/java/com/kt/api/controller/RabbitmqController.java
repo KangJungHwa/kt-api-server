@@ -7,10 +7,8 @@ import com.kt.api.model.MQResponse;
 import com.kt.api.model.StatusEnum;
 
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeoutException;
 
 @Slf4j
@@ -31,12 +28,11 @@ public class RabbitmqController {
     @RequestMapping(value = "/send", method = RequestMethod.POST)
         public ResponseEntity<MQResponse> sendMessage(@RequestBody @Valid MQRequest request) throws IOException, TimeoutException {
         log.info("{}", String.format("'%s' message를 전송합니다.", request.getRequestMessage()));
+        log.info("{}", String.format("'%s' routeKey.", request.getRouteKey()));
 
         Channel channel = RabbitMqConfiguration.getChannel();
         String message = "Drink a lot of Water and stay Healthy!";
         channel.basicPublish("nlu-topic-exchange", request.getRouteKey(), null, message.getBytes());
-
-
 
         MQResponse response = new MQResponse();
         HttpHeaders headers= new HttpHeaders();
@@ -47,4 +43,5 @@ public class RabbitmqController {
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
 
     }
+
 }

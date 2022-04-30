@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 
 @Data
 @Entity(name = "nlu_api_request_history")
-public class TrainRequestEntity {
+public class NluRequestEntity {
     @Id
     @Column(name = "request_id", columnDefinition = "VARCHAR(100)", nullable = true)
     private String requestId;
