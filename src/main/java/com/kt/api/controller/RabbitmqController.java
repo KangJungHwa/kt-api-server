@@ -32,7 +32,7 @@ public class RabbitmqController {
         public ResponseEntity<MQResponse> sendMessage(@RequestBody @Valid MQRequest request) throws IOException, TimeoutException {
         log.info("{}", String.format("'%s' message를 전송합니다.", request.getRequestMessage()));
 
-        Channel channel = RabbitMqConfiguration.getConnection().createChannel();
+        Channel channel = RabbitMqConfiguration.getChannel();
         String message = "Drink a lot of Water and stay Healthy!";
         channel.basicPublish("nlu-topic-exchange", request.getRouteKey(), null, message.getBytes());
 

@@ -25,7 +25,6 @@ public class RabbitMqConfiguration {
     public void setHost(String host) {
         this.host = host;
     }
-
     @Value("${spring.rabbitmq.port}")
     public void setPort(int port) {
         this.port=port;
@@ -40,6 +39,7 @@ public class RabbitMqConfiguration {
     }
 
     private static Connection connection = null;
+    private static Channel channel= null;
     @PostConstruct
     public static Connection getConnection() {
         if (connection == null) {
@@ -58,7 +58,13 @@ public class RabbitMqConfiguration {
         }
         return connection;
     }
-
+    @Bean
+    public static Channel getChannel() throws IOException {
+        if (connection == null) {
+             channel =getConnection().createChannel();
+        }
+        return channel;
+    }
     @Bean
     public  void declareExchange() throws IOException, TimeoutException {
         Channel channel = getConnection().createChannel();
