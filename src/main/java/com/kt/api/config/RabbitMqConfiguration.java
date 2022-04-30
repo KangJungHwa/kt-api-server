@@ -73,7 +73,7 @@ public class RabbitMqConfiguration {
         return channel;
     }
 
-    private RabbitMqConfiguration() throws IOException, TimeoutException {
+    RabbitMqConfiguration() throws IOException, TimeoutException {
         init();
     }
     private void init() throws IOException, TimeoutException {
