@@ -30,7 +30,6 @@ import java.util.List;
 @RequestMapping("/rabbitmq")
 public class RabbitmqController {
 
-
     private  ApplicationContext  context;
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
@@ -58,7 +57,7 @@ public class RabbitmqController {
             for (MessageQueueEntity mq : requestList) {
                 RabbitMqConfiguration.getChannel().queueDeclare(mq.getQueueName(), true, false, false, null);
                 RabbitMqConfiguration.getChannel().queueBind(mq.getQueueName(), "nlu-topic-exchange", mq.getRouteKey());
-                //리시버 등록
+                //실시간 리시버 등록
                 if (mq.equals("receive")) {
                     listener.addQueueNames(mq.getQueueName());
                 }
@@ -96,7 +95,5 @@ public class RabbitmqController {
         }
         return ResponseUtils.getResponse(StatusEnum.OK,"Queue list search Success!",mqlist);
     }
-
-
 
 }
