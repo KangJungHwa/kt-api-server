@@ -10,4 +10,8 @@ import java.util.List;
 public interface MqmappingRepository extends CrudRepository<MessageQueueEntity, Long> {
 
     List<MessageQueueEntity> findByDirection(String direction);
+
+    List<MessageQueueEntity> findAll();
+
+
 }

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MQReceiver implements MessageListener {
-
     public void onMessage(Message message) {
         System.out.println("Consuming Message - " + new String(message.getBody()));
         System.out.println(message.getMessageProperties());

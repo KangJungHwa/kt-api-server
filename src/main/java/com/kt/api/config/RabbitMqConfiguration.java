@@ -1,20 +1,26 @@
 package com.kt.api.config;
 
 
-import com.kt.api.receiver.MQReceiver;
+
 import com.kt.api.model.entity.MessageQueueEntity;
+import com.kt.api.receiver.MQReceiver;
 import com.kt.api.repository.MqmappingRepository;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -23,6 +29,8 @@ import java.util.concurrent.TimeoutException;
 
 @Configuration
 @Slf4j
+@AllArgsConstructor
+@NoArgsConstructor
 public class RabbitMqConfiguration {
     private static String host;
     private static int port;
@@ -51,14 +59,18 @@ public class RabbitMqConfiguration {
     }
 
     //Connection과 Channel은 싱글톤을 사용한다.
+    private static com.rabbitmq.client.ConnectionFactory connectionFactory = null;
     private static Connection connection = null;
     private static Channel channel = null;
 
     @Autowired
     MqmappingRepository mqmappingRepository;
 
+
+
     public List<MessageQueueEntity> sendQueueList;
     public List<MessageQueueEntity> receiveQueueList;
+
 
     //PostConstruct를 사용한 이유는 autowired 가 실행되고 난후에 실행되어야 null point 예외가 발생하지 않는다.
     @PostConstruct
@@ -76,19 +88,26 @@ public class RabbitMqConfiguration {
             log.info(q.getQueueName());
         }
     }
-    //bean 등록 전에 connection과 channel이 생성되어야 해서 PostConstruct 사용
-    @PostConstruct
-    public static Connection getConnection() {
-        if (connection == null) {
-            try {
+
+
+   @PostConstruct
+    public static com.rabbitmq.client.ConnectionFactory getConnectionFactory() {
                 ConnectionFactory connectionFactory = new ConnectionFactory();
 
                 connectionFactory.setHost(host);
                 connectionFactory.setPort(port);
                 connectionFactory.setUsername(username);
                 connectionFactory.setPassword(password);
+        return connectionFactory;
+    }
 
-                connection = connectionFactory.newConnection();
+
+    //bean 등록 전에 connection과 channel이 생성되어야 해서 PostConstruct 사용
+    @PostConstruct
+    public static Connection getConnection() {
+        if (connection == null) {
+            try {
+                   connection = getConnectionFactory().newConnection();
             } catch (IOException | TimeoutException e) {
                 e.printStackTrace();
             }
@@ -133,8 +152,8 @@ public class RabbitMqConfiguration {
         }
     }
     //receiveQueue에서 message listen용도 bean으로 등록되어야 함.
-    @Bean
-    MessageListenerContainer messageListenerContainer(org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory ) {
+    @Bean("listener")
+    public MessageListenerContainer messageListenerContainer(org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory ) {
         SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
         simpleMessageListenerContainer.setConnectionFactory(connectionFactory);
         for (MessageQueueEntity queue : receiveQueueList) {
@@ -147,4 +166,5 @@ public class RabbitMqConfiguration {
         simpleMessageListenerContainer.setMessageListener(new MQReceiver());
         return simpleMessageListenerContainer;
     }
+
 }

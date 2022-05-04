@@ -44,24 +44,49 @@ nohup java -jar 'kt-k8s-monitoring-1.0.0-SNAPSHOT.jar' & > /dev/null
 ```
 
 
-###  MessageQueue RouteKey 매핑정보
+###  MessageQueue RouteKey 매핑정보 테이블 및 sequence 생성
 ```$xslt
-CREATE TABLE nlu.nlu_mq_mapping (
+DROP TABLE IF EXISTS nlu.nlu_mq_mapping;
+CREATE TABLE `nlu_mq_mapping` (
   `id` int(11) NOT NULL,
-  `direction` varchar(20) DEFAULT NULL,
-  `queue_name` varchar(40) DEFAULT NULL,
-  `route_key` varchar(40) DEFAULT NULL,
+  `direction` varchar(20) NOT NULL,
+  `queue_name` varchar(40) NOT NULL,
+  `route_key` varchar(40) NOT NULL,
+  `exchange` varchar(40) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+DROP TABLE IF EXISTS nlu.nlu_mq_mapping_seq;
+CREATE TABLE  nlu.nlu_mq_mapping_seq (
+	`id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY
+);
 
-insert into nlu.nlu_mq_mapping values(1,'send','IntentService','intent.service.*');
-insert into nlu.nlu_mq_mapping values(2,'send','IntentTrain','intent.train.*');
-insert into nlu.nlu_mq_mapping values(3,'send','NerService','ner.service.*');
-insert into nlu.nlu_mq_mapping values(4,'send','NerTrain','ner.train.*');
-insert into nlu.nlu_mq_mapping values(5,'receive','IntentServiceResult','intent.service.result.*');
-insert into nlu.nlu_mq_mapping values(6,'receive','IntentTrainResult','intent.train.result.*');
-insert into nlu.nlu_mq_mapping values(7,'receive','NerServiceResult','ner.service.result.*');
-insert into nlu.nlu_mq_mapping values(8,'receive','NerTrainResult','ner.train.result.*');
+DELIMITER //
+
+DROP TRIGGER IF EXISTS nlu.nlu_mq_mapping_seq_insert_seq //
+
+CREATE TRIGGER nlu.`nlu_mq_mapping_seq_insert_seq`
+BEFORE INSERT ON nlu.`nlu_mq_mapping`
+FOR EACH ROW
+BEGIN
+  INSERT INTO nlu.`nlu_mq_mapping_seq` VALUES (NULL);
+  SET NEW.id = LAST_INSERT_ID();
+END 
+
+//
+
+DELIMITER ;
+
+트리거에 의해 seq를 0으로 입력해도 max(id) +1로 입력된다.
+
+insert into nlu.nlu_mq_mapping values(0,'send','IntentService999','intent.service.*','nlu-topic-exchange');
+insert into nlu.nlu_mq_mapping values(0,'send','IntentTrain','intent.train.*','nlu-topic-exchange');
+insert into nlu.nlu_mq_mapping values(0,'send','NerService','ner.service.*','nlu-topic-exchange');
+insert into nlu.nlu_mq_mapping values(0,'send','NerTrain','ner.train.*','nlu-topic-exchange');
+insert into nlu.nlu_mq_mapping values(0,'receive','IntentServiceResult','intent.service.result.*','nlu-topic-exchange');
+insert into nlu.nlu_mq_mapping values(0,'receive','IntentTrainResult','intent.train.result.*','nlu-topic-exchange');
+insert into nlu.nlu_mq_mapping values(0,'receive','NerServiceResult','ner.service.result.*','nlu-topic-exchange');
+insert into nlu.nlu_mq_mapping values(0,'receive','NerTrainResult','ner.train.result.*','nlu-topic-exchange');
 ```
+

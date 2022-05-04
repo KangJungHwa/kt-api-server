@@ -8,12 +8,17 @@ import lombok.Data;
 public class MQRequest {
 
 
-    @ApiModelProperty(name = "requestMessage", value = "message")
+    @ApiModelProperty(name = "requestMessage", value = "requestMessage")
     @JsonProperty("requestMessage")
     private String requestMessage;
 
 
-    @ApiModelProperty(name = "routeKey", value = "message")
+    @ApiModelProperty(name = "routeKey", value = "routeKey")
     @JsonProperty("routeKey")
     private String routeKey;
+
+
+    @ApiModelProperty(name = "messageQueue", value = "messageQueue")
+    @JsonProperty("messageQueue")
+    private String messageQueue;
 }

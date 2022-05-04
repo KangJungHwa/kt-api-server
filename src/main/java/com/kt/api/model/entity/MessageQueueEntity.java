@@ -23,4 +23,7 @@ public class MessageQueueEntity{
     @Column(name = "queue_name", columnDefinition = "VARCHAR(40)", nullable = true)
     private String queueName;
 
+    @Column(name = "exchange", columnDefinition = "VARCHAR(40)", nullable = true)
+    private String exchange;
+
 }
