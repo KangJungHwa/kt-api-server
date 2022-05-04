@@ -160,21 +160,23 @@ public class FileUtils {
      * @param bytes
      * @return
      */
-    public static String humanReadableByte(double bytes) {
-            String cnt_size;
+    public static String humanReadableByte(Long bytes) {
+        String cnt_size;
+        Long size_b = bytes;
+        Long size_kb = size_b /1024;
+        Long size_mb = size_kb / 1024;
+        Long size_gb = size_mb / 1024 ;
 
-            double size_kb = bytes /1024;
-            double size_mb = size_kb / 1024;
-            double size_gb = size_mb / 1024 ;
-
-            if (size_gb > 0){
-                cnt_size = size_gb + " GB";
-            }else if(size_mb > 0){
-                cnt_size = size_mb + " MB";
-            }else{
-                cnt_size = size_kb + " KB";
-            }
-            return cnt_size;
+        if (size_gb > 0){
+            cnt_size = size_gb + " GB";
+        }else if(size_mb > 0){
+            cnt_size = size_mb + " MB";
+        }else if(size_kb > 0){
+            cnt_size = size_kb + " KB";
+        }else{
+            cnt_size= size_b +" B";
+        }
+        return cnt_size;
     }
     /**
      * 디렉토리를 생성할 경우.

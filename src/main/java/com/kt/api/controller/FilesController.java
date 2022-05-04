@@ -70,6 +70,8 @@ public class FilesController {
 
 
     /**
+     * curl --request GET \
+     *   --url http://service-api.k8s.io:30083/files/listfile/upload_test
      * @param path
      * @return
      */
