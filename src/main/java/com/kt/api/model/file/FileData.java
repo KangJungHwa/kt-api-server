@@ -1,31 +1,20 @@
 package com.kt.api.model.file;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class FileData {
     private String filename;
-    private String url;
-    private Long size;
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public Long getSize() {
-        return size;
-    }
-
-    public void setSize(Long size) {
-        this.size = size;
-    }
+    private String path;
+    private String lastModifyDate;
+    private String fileSize;
 }

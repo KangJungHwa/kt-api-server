@@ -1,15 +1,23 @@
 package com.kt.api.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.kt.api.model.DefaultResponse;
+import com.kt.api.model.StatusEnum;
 import com.kt.api.model.file.FileData;
 import com.kt.api.model.file.UploadResponseMessage;
 import com.kt.api.service.FileService;
+import com.kt.api.util.FileUtils;
+import com.kt.api.util.ResponseUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,16 +30,16 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
  * 아래 참고
  * https://frontbackend.com/spring-boot/spring-boot-upload-file-to-filesystem
  */
+@Slf4j
 @RestController
 @RequestMapping("files")
 public class FilesController {
 
-    private final FileService fileService;
-
     @Autowired
-    public FilesController(FileService fileService) {
-        this.fileService = fileService;
-    }
+    FileService fileService;
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     /**
      * path 입력시 쌍따온표 입력하면 에러남.
@@ -47,19 +55,41 @@ public class FilesController {
      * @return
      */
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public ResponseEntity<UploadResponseMessage> uploadFile(@RequestParam("file") MultipartFile file,
-                                                            @RequestParam("path") String path,
-                                                            @RequestParam("isOverWrite") boolean isOverWrite
-                                                            ) {
+    public ResponseEntity<DefaultResponse> uploadFile(@RequestParam("file") MultipartFile file,
+                                                      @RequestParam("path") String path,
+                                                      @RequestParam("isOverWrite") boolean isOverWrite )
+    {
         try {
-
             fileService.save(file,path);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(new UploadResponseMessage("Uploaded the file successfully: " + file.getOriginalFilename()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-                    .body(new UploadResponseMessage("Could not upload the file: " + file.getOriginalFilename() + "!"));
+            return ResponseUtils.getResponse(StatusEnum.INTERNAL_SERVER_ERROR,"File upload fail!","File upload fail!");
         }
+        return ResponseUtils.getResponse(StatusEnum.OK,"File upload success!","File upload success!");
+    }
+
+
+
+    /**
+     * @param path
+     * @return
+     */
+    @GetMapping("/listfile/{path}")
+    @ResponseBody
+    public ResponseEntity<DefaultResponse> uploadFile(@PathVariable String path) {
+        log.info("{}", String.format("'%s' 파일 리스트를 표시합니다..", uploadPath+path));
+        File [] files=null;
+        List<FileData> listFile=null;
+        try{
+            File filepath = new File(uploadPath+path);
+            if(!filepath.isDirectory()){
+                return ResponseUtils.getResponse(StatusEnum.EXPECTATION_FAILED,"Path is not directory!","Path is not directory!");
+            }else{
+                listFile = FileUtils.listFile(uploadPath+path);
+            }
+        }catch(Exception e){
+            return ResponseUtils.getResponse(StatusEnum.INTERNAL_SERVER_ERROR,"File list search fail!","List file fail!");
+        }
+        return ResponseUtils.getResponse(StatusEnum.OK,"File list search Success!",listFile);
     }
 
 //    @GetMapping

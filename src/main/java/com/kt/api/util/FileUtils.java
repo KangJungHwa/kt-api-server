@@ -1,12 +1,16 @@
 package com.kt.api.util;
 
+import com.kt.api.model.file.FileData;
 import org.apache.commons.lang.SystemUtils;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.CharacterIterator;
+import java.text.SimpleDateFormat;
 import java.text.StringCharacterIterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -132,6 +136,7 @@ public class FileUtils {
 
     /**
      * byte를 휴먼리더블 하게 변환
+     * KiB는 2의 10승 즉 1024 byte를 의미한다.
      * @param bytes
      * @return
      */
@@ -149,7 +154,28 @@ public class FileUtils {
         value *= Long.signum(bytes);
         return String.format("%.1f %ciB", value / 1024.0, ci.current());
     }
+    /**
+     * byte를 휴먼리더블 하게 변환
+     * KB는  1000 byte를 의미한다.
+     * @param bytes
+     * @return
+     */
+    public static String humanReadableByte(double bytes) {
+            String cnt_size;
 
+            double size_kb = bytes /1024;
+            double size_mb = size_kb / 1024;
+            double size_gb = size_mb / 1024 ;
+
+            if (size_gb > 0){
+                cnt_size = size_gb + " GB";
+            }else if(size_mb > 0){
+                cnt_size = size_mb + " MB";
+            }else{
+                cnt_size = size_kb + " KB";
+            }
+            return cnt_size;
+    }
     /**
      * 디렉토리를 생성할 경우.
      */
@@ -171,7 +197,7 @@ public class FileUtils {
         }
     }
     /**
-     * 심볼릭 링크를 생성할 경우
+     * 파일 내용 읽어 들이기
      */
     public static StringBuilder readFile(String filePath) {
         StringBuilder sb=new StringBuilder();
@@ -184,10 +210,33 @@ public class FileUtils {
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Could not create symbolic link!");
+            throw new RuntimeException("Could not read file! ");
         }
         return sb;
     }
 
+    /**
+     * 주어진 path의 파일리스트를 리턴
+     */
+    public static List<FileData> listFile(String path) {
+        File filepath = new File(path);
+        List<FileData> fileList=new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+        File [] files=null;
+        //디렉토리
+        if(filepath.isDirectory()){
+            files=filepath.listFiles();
+        }
+        for(int i=0; i< files.length; i++) {
+            FileData fd=FileData.builder()
+                    .filename(files[i].getName())
+                    .path(files[i].getPath())
+                    .fileSize(FileUtils.humanReadableByte(files[i].length()))
+                    .lastModifyDate(sdf.format(files[i].lastModified()))
+                    .build();
+            fileList.add(fd);
+        }
+        return fileList;
+    }
 
 }

@@ -1,16 +1,16 @@
 package com.kt.api.controller;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kt.api.config.RabbitMqConfiguration;
+import com.kt.api.model.DefaultResponse;
 import com.kt.api.model.MQRequest;
-import com.kt.api.model.MQResponse;
 import com.kt.api.model.StatusEnum;
 
 
 import com.kt.api.model.entity.MessageQueueEntity;
 import com.kt.api.repository.MqmappingRepository;
 import com.kt.api.util.ApplicationContextHolder;
+import com.kt.api.util.ResponseUtils;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,10 +22,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @RestController
@@ -33,86 +31,70 @@ import java.util.concurrent.TimeoutException;
 public class RabbitmqController {
 
 
-
-    private static ApplicationContext  context;
+    private  ApplicationContext  context;
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
-        public ResponseEntity<MQResponse> sendMessage(@RequestBody @Valid MQRequest request) throws IOException, TimeoutException {
+        public ResponseEntity<DefaultResponse> sendMessage(@RequestBody @Valid MQRequest request)  {
         log.info("{}", String.format("'%s' message를 전송합니다.", request.getRequestMessage()));
         log.info("{}", String.format("'%s' routeKey.", request.getRouteKey()));
-
-        Channel channel = RabbitMqConfiguration.getChannel();
-        String message = "Drink a lot of Water and stay Healthy!";
-        channel.basicPublish("nlu-topic-exchange", request.getRouteKey(), null, message.getBytes());
-
-        MQResponse response = new MQResponse();
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        response.setStatus(StatusEnum.OK);
-        response.setMessage("Send Message  Success!");
-        response.setData("Send Message Success!");
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
-
+        try {
+            Channel channel = RabbitMqConfiguration.getChannel();
+            channel.basicPublish("nlu-topic-exchange", request.getRouteKey(), null, request.getRequestMessage().getBytes());
+        }catch (Exception e){
+            return ResponseUtils.getResponse(StatusEnum.INTERNAL_SERVER_ERROR,"Send message fail!","Send message fail!");
+        }
+        return ResponseUtils.getResponse(StatusEnum.OK,"Send Message Success!","Send Message Success!");
     }
 
     @RequestMapping(value = "/addqueue", method = RequestMethod.POST)
-    public ResponseEntity<MQResponse> addQueue(@RequestBody List<MessageQueueEntity> requestList) throws IOException {
-        /**
-         * ApplicationContext 는 한번 @Autowired로 인스턴스가 생성된 클래스를 재사용하기 위해 사용한다.
-         */
+    public ResponseEntity<DefaultResponse> addQueue(@RequestBody List<MessageQueueEntity> requestList) throws IOException {
 
-        MqmappingRepository repo = context.getBean(MqmappingRepository.class);
-        SimpleMessageListenerContainer listener = context.getBean("listener",SimpleMessageListenerContainer.class);
+        try {
+            context = ApplicationContextHolder.get();
+            MqmappingRepository repo = context.getBean(MqmappingRepository.class);
+            SimpleMessageListenerContainer listener = context.getBean("listener", SimpleMessageListenerContainer.class);
+            repo.saveAll(requestList);
 
-        repo.saveAll(requestList);
-
-        for (MessageQueueEntity mq:requestList){
-            RabbitMqConfiguration.getChannel().queueDeclare(mq.getQueueName(), true, false, false, null);
-            RabbitMqConfiguration.getChannel().queueBind(mq.getQueueName(), "nlu-topic-exchange", mq.getRouteKey());
-            //리시버 등록
-            if (mq.equals("receive")) {
-                listener.addQueueNames(mq.getQueueName());
+            for (MessageQueueEntity mq : requestList) {
+                RabbitMqConfiguration.getChannel().queueDeclare(mq.getQueueName(), true, false, false, null);
+                RabbitMqConfiguration.getChannel().queueBind(mq.getQueueName(), "nlu-topic-exchange", mq.getRouteKey());
+                //리시버 등록
+                if (mq.equals("receive")) {
+                    listener.addQueueNames(mq.getQueueName());
+                }
             }
+        }catch (Exception e){
+            return ResponseUtils.getResponse(StatusEnum.INTERNAL_SERVER_ERROR,"Add queue fail!","Add queue fail!");
         }
-
-        MQResponse response = new MQResponse();
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        response.setStatus(StatusEnum.OK);
-        response.setMessage("Add Message Queue Success!");
-        response.setData("Add Message Queue Success!");
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+        return ResponseUtils.getResponse(StatusEnum.OK,"Add Queue Success!","Add Queue Success!");
     }
     @RequestMapping(value = "/delqueue", method = RequestMethod.POST)
-    public ResponseEntity<MQResponse> delQueue(@RequestBody List<MessageQueueEntity> requestList) throws IOException {
-        context  = ApplicationContextHolder.get();;
-        MqmappingRepository repo = context.getBean(MqmappingRepository.class);
-        for (MessageQueueEntity queue:requestList) {
-            repo.delete(queue);
-            RabbitMqConfiguration.getChannel().queueUnbind(queue.getQueueName(), "nlu-topic-exchange", queue.getRouteKey());
-            RabbitMqConfiguration.getChannel().queueDelete(queue.getQueueName());
+    public ResponseEntity<DefaultResponse> delQueue(@RequestBody List<MessageQueueEntity> requestList) throws IOException {
+        try {
+            context = ApplicationContextHolder.get();
+            MqmappingRepository repo = context.getBean(MqmappingRepository.class);
+            for (MessageQueueEntity queue : requestList) {
+                repo.delete(queue);
+                RabbitMqConfiguration.getChannel().queueUnbind(queue.getQueueName(), "nlu-topic-exchange", queue.getRouteKey());
+                RabbitMqConfiguration.getChannel().queueDelete(queue.getQueueName());
+            }
+        } catch (Exception e) {
+            return ResponseUtils.getResponse(StatusEnum.INTERNAL_SERVER_ERROR,"Delete queue fail!","Delete queue fail!");
         }
-        MQResponse response = new MQResponse();
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        response.setStatus(StatusEnum.OK);
-        response.setMessage("Delete Message Queue Success!");
-        response.setData("Delete Message Queue Success!");
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+        return ResponseUtils.getResponse(StatusEnum.OK,"Delete Queue Success!","Delete Queue Success!");
     }
 
     @RequestMapping(value = "/listqueue", method = RequestMethod.GET)
-    public ResponseEntity<MQResponse> listQueue() throws IOException {
-        context  = ApplicationContextHolder.get();;
-        MqmappingRepository repo = context.getBean(MqmappingRepository.class);
-        List<MessageQueueEntity> mqlist = repo.findAll();
-        MQResponse response = new MQResponse();
-        HttpHeaders headers= new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        response.setStatus(StatusEnum.OK);
-        response.setMessage("Message Queue Success!");
-        response.setData(mqlist);
-        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    public ResponseEntity<DefaultResponse> listQueue() throws IOException {
+        List<MessageQueueEntity> mqlist=null;
+        try {
+            context = ApplicationContextHolder.get();
+            MqmappingRepository repo = context.getBean(MqmappingRepository.class);
+            mqlist = repo.findAll();
+        } catch (Exception e) {
+            return ResponseUtils.getResponse(StatusEnum.INTERNAL_SERVER_ERROR,"Queue list search fail!","Queue list search fail!");
+        }
+        return ResponseUtils.getResponse(StatusEnum.OK,"Queue list search Success!",mqlist);
     }
 
 
