@@ -1,6 +1,8 @@
 package com.kt.api.util;
 
+import com.kt.api.model.ExecuteResult;
 import com.kt.api.model.file.FileData;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.SystemUtils;
 
 import java.io.*;
@@ -16,6 +18,7 @@ import java.util.Scanner;
 /**
  * File Utility.
  */
+@Slf4j
 public class FileUtils {
 
     public static long KB = 1024L;
@@ -201,44 +204,103 @@ public class FileUtils {
     /**
      * 파일 내용 읽어 들이기
      */
-    public static StringBuilder readFile(String filePath) {
+    public static ExecuteResult readFile(String filePath) {
         StringBuilder sb=new StringBuilder();
         try {
             Scanner scanner = new Scanner(new File(filePath));
 
             while (scanner.hasNextLine()) {
                 String str = scanner.nextLine();
-                sb.append(str);
+                log.info(str);
+                sb.append(str+"\n");
             }
 
         } catch (IOException e) {
-            throw new RuntimeException("Could not read file! ");
+            log.error("Could not read file! ");
+            return ExecuteResult.builder().status(false).result(sb.append("Could not read file! ").toString()).build();
         }
-        return sb;
+        return ExecuteResult.builder().status(true).result(sb.toString()).build();
     }
 
     /**
      * 주어진 path의 파일리스트를 리턴
      */
-    public static List<FileData> listFile(String path) {
+    public static ExecuteResult listFile(String path) {
         File filepath = new File(path);
+        String message=null;
         List<FileData> fileList=new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
         File [] files=null;
         //디렉토리
-        if(filepath.isDirectory()){
-            files=filepath.listFiles();
+        try {
+            if (filepath.isDirectory()) {
+                files = filepath.listFiles();
+            } else {
+                FileData fd = FileData.builder()
+                        .filename(filepath.getName())
+                        .path(filepath.getPath())
+                        .fileSize(FileUtils.humanReadableByte(filepath.length()))
+                        .lastModifyDate(sdf.format(filepath.lastModified()))
+                        .build();
+                fileList.add(fd);
+            }
+            for (int i = 0; i < files.length; i++) {
+                FileData fd = FileData.builder()
+                        .filename(files[i].getName())
+                        .path(files[i].getPath())
+                        .fileSize(FileUtils.humanReadableByte(files[i].length()))
+                        .lastModifyDate(sdf.format(files[i].lastModified()))
+                        .build();
+                fileList.add(fd);
+            }
+        } catch (Exception e) {
+            message = " not exists!";
+            log.error(path+message);
+            return ExecuteResult.builder().status(false).result(path+message).build();
         }
-        for(int i=0; i< files.length; i++) {
-            FileData fd=FileData.builder()
-                    .filename(files[i].getName())
-                    .path(files[i].getPath())
-                    .fileSize(FileUtils.humanReadableByte(files[i].length()))
-                    .lastModifyDate(sdf.format(files[i].lastModified()))
-                    .build();
-            fileList.add(fd);
-        }
-        return fileList;
+        return ExecuteResult.builder().status(true).result(fileList).build();
     }
 
+    /**
+     * 파일 삭제
+     */
+    public static ExecuteResult delete(String target) {
+        File file = new File(target);
+        boolean status =true;
+        String message=null;
+        try {
+            if (file.exists()) { //파일존재여부확인
+                if (file.isDirectory()) { //파일이 디렉토리인지 확인
+                    File[] files = file.listFiles();
+                    for (int i = 0; i < files.length; i++) {
+                        if (files[i].delete()) {
+                            message = " Delete success!";
+                        } else {
+                            message = " Delete fail!";
+                            status = false;
+                        }
+                        log.info(files[i].getName() + message);
+                    }
+                    return ExecuteResult.builder().status(status).result(target+message).build();
+                }
+                if (file.delete()) {
+                    message = " Delete success!";
+                } else {
+                    message = " Delete fail!";
+                    status = false;
+                }
+
+                log.error(file.getName() + message);
+            } else {
+                message = " File not exists!";
+                log.error(target+message);
+                status = false;
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            status = false;
+            return ExecuteResult.builder().status(status).result(e.getMessage()).build();
+        }
+        return ExecuteResult.builder().status(status).result(target+message).build();
+    }
 }

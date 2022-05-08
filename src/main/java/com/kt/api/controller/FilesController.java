@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.kt.api.model.DefaultResponse;
+import com.kt.api.model.ExecuteResult;
+import com.kt.api.model.MQRequest;
 import com.kt.api.model.StatusEnum;
 import com.kt.api.model.file.FileData;
 import com.kt.api.model.file.UploadResponseMessage;
@@ -25,6 +27,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+
+import javax.validation.Valid;
 
 /**
  * 아래 참고
@@ -72,68 +76,60 @@ public class FilesController {
     /**
      * curl --request GET \
      *   --url http://service-api.k8s.io:30083/files/listfile/upload_test
-     * @param path
+     * @param fileData
      * @return
      */
-    @GetMapping("/listfile/{path}")
+    @GetMapping("/listfile")
     @ResponseBody
-    public ResponseEntity<DefaultResponse> uploadFile(@PathVariable String path) {
-        log.info("{}", String.format("'%s' 파일 리스트를 표시합니다..", uploadPath+path));
+    public ResponseEntity<DefaultResponse> listFile(@RequestBody @Valid FileData fileData) {
+        log.info("{}", String.format("'%s' 파일 리스트를 표시합니다..", uploadPath+fileData.getPath()));
         File [] files=null;
         List<FileData> listFile=null;
         try{
-            File filepath = new File(uploadPath+path);
-            if(!filepath.isDirectory()){
-                return ResponseUtils.getResponse(StatusEnum.EXPECTATION_FAILED,"Path is not directory!","Path is not directory!");
-            }else{
-                listFile = FileUtils.listFile(uploadPath+path);
-            }
+            File filepath = new File(uploadPath+fileData.getPath());
+                listFile = (List<FileData>)FileUtils.listFile(uploadPath+fileData.getPath()).getResult();
         }catch(Exception e){
             return ResponseUtils.getResponse(StatusEnum.INTERNAL_SERVER_ERROR,"File list search fail!","List file fail!");
         }
         return ResponseUtils.getResponse(StatusEnum.OK,"File list search Success!",listFile);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<FileData>> getListFiles() {
-//        List<FileData> fileInfos = fileService.loadAll()
-//                .stream()
-//                .map(this::pathToFileData)
-//                .collect(Collectors.toList());
-//
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(fileInfos);
-//    }
-
-//    @DeleteMapping
-//    public void delete() {
-//        fileService.deleteAll();
-//    }
-//
-//    private FileData pathToFileData(Path path) {
-//        FileData fileData = new FileData();
-//        String filename = path.getFileName()
-//                .toString();
-//        fileData.setFilename(filename);
-//        fileData.setUrl(MvcUriComponentsBuilder.fromMethodName(FilesController.class, "getFile", filename)
-//                .build()
-//                .toString());
-//        try {
-//            fileData.setSize(Files.size(path));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("Error: " + e.getMessage());
-//        }
-//
-//        return fileData;
-//    }
-
-//    @GetMapping("{filename:.+}")
-//    @ResponseBody
-//    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-//        Resource file = fileService.load(filename);
-//        return ResponseEntity.ok()
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-//                .body(file);
-//    }
+    /**
+     * 파일 삭제
+     * 파라메터가 DIRECTORY면 DIRECTORY 삭제 FILE이면 FILE 삭제
+     * @param fileData
+     * @return
+     */
+    @DeleteMapping("/delfile")
+    @ResponseBody
+    public ResponseEntity<DefaultResponse> delete(@RequestBody @Valid FileData fileData) {
+        ExecuteResult executeResult = FileUtils.delete(uploadPath+fileData.getPath());
+        //ExecuteResult executeResult = FileUtils.delete(fileData.getPath());
+        if(executeResult.isStatus()){
+            return ResponseUtils.getResponse(StatusEnum.OK,
+                    executeResult.getResult().toString(),executeResult.getResult().toString());
+        }else{
+            return ResponseUtils.getResponse(StatusEnum.INTERNAL_SERVER_ERROR,
+                    executeResult.getResult().toString(),executeResult.getResult().toString());
+        }
+    }
+    /**
+     * 파일 삭제
+     * 파라메터가 DIRECTORY면 DIRECTORY 삭제 FILE이면 FILE 삭제
+     * @param fileData
+     * @return
+     */
+    @GetMapping("/readfile")
+    @ResponseBody
+    public ResponseEntity<DefaultResponse> readfile(@RequestBody @Valid FileData fileData) {
+        //ExecuteResult executeResult = FileUtils.readFile(uploadPath+fileData.getPath());
+        ExecuteResult executeResult = FileUtils.readFile(fileData.getPath());
+        if(executeResult.isStatus()){
+            return ResponseUtils.getResponse(StatusEnum.OK,
+                    fileData.getPath()+" file read success!",executeResult.getResult().toString());
+        }else{
+            return ResponseUtils.getResponse(StatusEnum.INTERNAL_SERVER_ERROR,
+                    executeResult.getResult().toString(),executeResult.getResult().toString());
+        }
+    }
 }
