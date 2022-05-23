@@ -95,6 +95,12 @@ public class FilesController {
     }
 
     /**
+     * curl --request DELETE \
+     *   --url http://localhost:8080/files/delfile \
+     *   --header 'Content-Type: application/json' \
+     *   --data '{
+     * 	"path":"C:\\\\service-api\\upload\\upload_test"
+     * }'
      * 파일 삭제
      * 파라메터가 DIRECTORY면 DIRECTORY 삭제 FILE이면 FILE 삭제
      * @param fileData
@@ -114,8 +120,13 @@ public class FilesController {
         }
     }
     /**
-     * 파일 삭제
-     * 파라메터가 DIRECTORY면 DIRECTORY 삭제 FILE이면 FILE 삭제
+     * curl --request GET \
+     *   --url http://localhost:8080/files/readfile \
+     *   --header 'Content-Type: application/json' \
+     *   --data '{
+     * 	"path": "C:\\\\service-api\\upload\\upload_test\\1.txt"
+     * }'
+     * 파일 읽기
      * @param fileData
      * @return
      */

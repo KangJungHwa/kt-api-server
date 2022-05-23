@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Data
-@Entity(name = "nlu_mq_mapping")
+@Entity(name = "service_api_nlu_mq_mapping")
 public class MessageQueueEntity{
 
     @Id

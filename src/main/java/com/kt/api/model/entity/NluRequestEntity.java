@@ -11,7 +11,7 @@ import javax.persistence.Lob;
 import java.sql.Timestamp;
 
 @Data
-@Entity(name = "nlu_api_request_history")
+@Entity(name = "service_api_request_history")
 public class NluRequestEntity {
     @Id
     @Column(name = "request_id", columnDefinition = "VARCHAR(100)", nullable = true)
