@@ -27,10 +27,10 @@
             <fileNamePattern>${LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB
+                <maxFileSize>30MB
                 </maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <maxHistory>30
+            <maxHistory>10
             </maxHistory>
         </rollingPolicy>
     </appender>
@@ -52,11 +52,11 @@
             <fileNamePattern>${LOG_PATH}/${ERR_LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB
+                <maxFileSize>30MB
                 </maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
 
-            <maxHistory>60
+            <maxHistory>10
             </maxHistory>
         </rollingPolicy>
     </appender>

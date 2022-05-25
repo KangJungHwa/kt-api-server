@@ -12,20 +12,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/log")
+@RequestMapping("/kube")
 @Api("kubelet 로그 검색 서비스")
 @ConfigurationProperties(prefix = "k8s")
-public class KubeletLogController {
+public class KubeController {
     @Autowired
     @Qualifier("mapper")
     ObjectMapper mapper;
@@ -53,31 +50,22 @@ public class KubeletLogController {
     }
 
 
-    /**
-     curl --request GET \
-     --url http://service-api.k8s.io:30083/log/kubelet/ \
-     --header 'Content-Type: application/json' \
-     --data '{"nodeName":"nlu-framework-worker-1","sinceMinutes":10}'
-     * @param request
-     * @return
-     * @throws InterruptedException
-     * @throws JSchException
-     */
-    @ApiOperation("kubelet 로그 검색")
-    @GetMapping("/kubelet")
-    public String getKubeletLog(@RequestBody @Valid KubeletLogReqest request) throws InterruptedException, JSchException {
-        log.info("{}", String.format("'%s'node의 kubelet 로그를 검색합니다.", request.getNodeName()));
+    @ApiOperation("pod 생성")
+    @PostMapping("/pods")
+    public String createPod(@RequestBody  String body) throws InterruptedException, JSchException {
+        log.info(body);
+        log.info("pod를 생성합니다.");
         long startMillis = System.currentTimeMillis();
+
         String responseStr=  SSHUtils.getSshResult(username,
                 EncryptionUtils.getDecodingStr(password),
-                nodes.get(request.getNodeName()),
-                "sudo journalctl -u kubelet --since \""+ String.valueOf(request.getSinceMinutes()) +" minute ago\" ",
-                ports.get(request.getNodeName()));
+                nodes.get("nlu-framework-master-1"),
+                "echo "+body+" >/tmp/"+String.valueOf(startMillis)+".yaml;kubectl create -f "+String.valueOf(startMillis)+".yaml",
+                ports.get("nlu-framework-master-1"));
 
         String endMillis = String.valueOf(System.currentTimeMillis() - startMillis);
         log.info("총 처리 시간은 {}ms 입니다.", endMillis);
         return responseStr;
     }
-
 
 }
