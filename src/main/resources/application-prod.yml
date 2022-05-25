@@ -36,7 +36,7 @@ spring:
   ##  multi row insert rewriteBatchedStatements=true
   ################################################################
   datasource:
-    url: jdbc:log4jdbc:mysql://10.233.4.179:3306/aicc_nlu_framework?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&rewriteBatchedStatements=true
+    url: jdbc:log4jdbc:mariadb://10.233.4.179:3306/aicc_nlu_framework?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&rewriteBatchedStatements=true
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     username: root
     password: ktaicc@1234
