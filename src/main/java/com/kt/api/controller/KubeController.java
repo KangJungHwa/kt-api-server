@@ -59,7 +59,7 @@ public class KubeController {
         String responseStr=  SSHUtils.getSshResult(username,
                 EncryptionUtils.getDecodingStr(password),
                 nodes.get("nlu-framework-master-1"),
-               "echo \""+body+"\" > /tmp/"+String.valueOf(startMillis)+".yaml;kubectl create -f "+String.valueOf(startMillis)+".yaml",
+               "echo \""+body+"\" > /tmp/"+String.valueOf(startMillis)+".yaml; kubectl create -f /tmp/"+String.valueOf(startMillis)+".yaml",
                 ports.get("nlu-framework-master-1"));
 
         String endMillis = String.valueOf(System.currentTimeMillis() - startMillis);
