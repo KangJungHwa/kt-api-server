@@ -53,7 +53,6 @@ public class KubeController {
     @ApiOperation("pod 생성")
     @PostMapping("/pods")
     public String createPod(@RequestBody  String body) throws InterruptedException, JSchException {
-        log.info(body);
         log.info("pod를 생성합니다.");
         long startMillis = System.currentTimeMillis();
         log.info("echo \""+body+"\" > /tmp/"+String.valueOf(startMillis)+".yaml;kubectl create -f /tmp/"+String.valueOf(startMillis)+".yaml");
