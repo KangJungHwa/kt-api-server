@@ -56,7 +56,7 @@ public class KubeController {
         log.info(body);
         log.info("pod를 생성합니다.");
         long startMillis = System.currentTimeMillis();
-        log.info("echo "+body+" > /tmp/"+String.valueOf(startMillis)+".yaml;kubectl create -f "+String.valueOf(startMillis)+".yaml");
+        log.info("echo \""+body+"\" > /tmp/"+String.valueOf(startMillis)+".yaml;kubectl create -f /tmp/"+String.valueOf(startMillis)+".yaml");
         String responseStr=  SSHUtils.getSshResult(username,
                 EncryptionUtils.getDecodingStr(password),
                 nodes.get("nlu-framework-master-1"),
