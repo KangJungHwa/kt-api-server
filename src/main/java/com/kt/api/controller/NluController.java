@@ -35,7 +35,7 @@ public class NluController {
          * 2. history 저장
          *         ActionLogging logging = ActionLogging.builder()
          *                 .actionName(command.getName())
-         *                 .serviceType("GLUE")
+         *                 .serviceType("service-api")
          *                 .ipAddress(request.getRemoteHost())
          *                 .requestId(requestId)
          *                 .username(context.getUsername()).build();
